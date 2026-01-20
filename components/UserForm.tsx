@@ -5,26 +5,28 @@ import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
-import type { User, CreateUserInput, UpdateUserInput, UserRole, UserStatus } from '@/types';
+import type { User, UpdateUserInput, UserRole, UserStatus } from '@/types';
 
 interface UserFormProps {
-  user?: User;
-  mode: 'create' | 'edit';
+  user: User;
 }
 
 const roles: UserRole[] = ['USER', 'MODERATOR', 'ADMIN'];
 const statuses: UserStatus[] = ['PENDING', 'ACTIVE', 'INACTIVE', 'SUSPENDED'];
 
-export function UserForm({ user, mode }: UserFormProps) {
+/**
+ * @deprecated Users are now created through Privy auth flow.
+ * This form only supports editing existing user's editable fields (role, status, email, customDisplayName).
+ */
+export function UserForm({ user }: UserFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [formData, setFormData] = useState<CreateUserInput | UpdateUserInput>({
-    email: user?.email || '',
-    firstName: user?.firstName || '',
-    lastName: user?.lastName || '',
-    role: user?.role || 'USER',
-    status: user?.status || 'PENDING',
+  const [formData, setFormData] = useState<UpdateUserInput>({
+    email: user.email || '',
+    customDisplayName: user.customDisplayName || '',
+    role: user.role,
+    status: user.status,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -33,11 +35,8 @@ export function UserForm({ user, mode }: UserFormProps) {
     setError(null);
 
     try {
-      const url = mode === 'create' ? '/api/users' : `/api/users/${user?.id}`;
-      const method = mode === 'create' ? 'POST' : 'PUT';
-
-      const response = await fetch(url, {
-        method,
+      const response = await fetch(`/api/users/${user.id}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData),
       });
@@ -67,18 +66,29 @@ export function UserForm({ user, mode }: UserFormProps) {
           </div>
         )}
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Input
-            label="First Name"
-            value={formData.firstName}
-            onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-            required
+        {/* Display Name (from Ethos - Read Only) */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Ethos Display Name
+          </label>
+          <input
+            type="text"
+            value={user.ethosDisplayName || user.ethosUsername || 'N/A'}
+            disabled
+            className="block w-full rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500"
           />
+          <p className="mt-1 text-xs text-gray-400">This field is synced from Ethos</p>
+        </div>
+
+        {/* Custom Display Name (Editable) */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Custom Display Name
+          </label>
           <Input
-            label="Last Name"
-            value={formData.lastName}
-            onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-            required
+            value={formData.customDisplayName}
+            onChange={(e) => setFormData({ ...formData, customDisplayName: e.target.value })}
+            placeholder="Override display name for this app"
           />
         </div>
 
@@ -87,7 +97,6 @@ export function UserForm({ user, mode }: UserFormProps) {
           type="email"
           value={formData.email}
           onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-          required
         />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -135,7 +144,7 @@ export function UserForm({ user, mode }: UserFormProps) {
             Cancel
           </Button>
           <Button type="submit" loading={loading}>
-            {mode === 'create' ? 'Create User' : 'Save Changes'}
+            Save Changes
           </Button>
         </div>
       </form>

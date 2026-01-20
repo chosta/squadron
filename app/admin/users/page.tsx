@@ -57,8 +57,8 @@ export default async function UsersPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
+                <TableHead>User</TableHead>
+                <TableHead>Ethos Score</TableHead>
                 <TableHead>Role</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Created</TableHead>
@@ -66,40 +66,58 @@ export default async function UsersPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {users.map((user) => (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    <div className="flex items-center space-x-3">
-                      <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
-                        <span className="text-primary-700 font-medium text-xs">
-                          {user.firstName[0]}{user.lastName[0]}
-                        </span>
+              {users.map((user) => {
+                const displayName = user.customDisplayName || user.ethosDisplayName || user.ethosUsername || 'Unknown';
+                const initials = displayName.slice(0, 2).toUpperCase();
+
+                return (
+                  <TableRow key={user.id}>
+                    <TableCell>
+                      <div className="flex items-center space-x-3">
+                        {user.ethosAvatarUrl ? (
+                          <img
+                            src={user.ethosAvatarUrl}
+                            alt={displayName}
+                            className="h-8 w-8 rounded-full object-cover"
+                          />
+                        ) : (
+                          <div className="h-8 w-8 rounded-full bg-primary-100 flex items-center justify-center">
+                            <span className="text-primary-700 font-medium text-xs">
+                              {initials}
+                            </span>
+                          </div>
+                        )}
+                        <div>
+                          <span className="font-medium block">{displayName}</span>
+                          {user.email && (
+                            <span className="text-sm text-gray-500">{user.email}</span>
+                          )}
+                        </div>
                       </div>
-                      <span className="font-medium">
-                        {user.firstName} {user.lastName}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-gray-500">{user.email}</TableCell>
-                  <TableCell>
-                    <Badge variant={getRoleBadgeVariant(user.role)}>{user.role}</Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge variant={getStatusBadgeVariant(user.status)}>{user.status}</Badge>
-                  </TableCell>
-                  <TableCell className="text-gray-500">
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end space-x-2">
-                      <Link href={`/admin/users/${user.id}`}>
-                        <Button variant="ghost" size="sm">Edit</Button>
-                      </Link>
-                      <DeleteUserButton userId={user.id} userName={`${user.firstName} ${user.lastName}`} />
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+                    </TableCell>
+                    <TableCell className="text-gray-500">
+                      {user.ethosScore ?? 'N/A'}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={getRoleBadgeVariant(user.role)}>{user.role}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={getStatusBadgeVariant(user.status)}>{user.status}</Badge>
+                    </TableCell>
+                    <TableCell className="text-gray-500">
+                      {new Date(user.createdAt).toLocaleDateString()}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end space-x-2">
+                        <Link href={`/admin/users/${user.id}`}>
+                          <Button variant="ghost" size="sm">View</Button>
+                        </Link>
+                        <DeleteUserButton userId={user.id} userName={displayName} />
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         )}

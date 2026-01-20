@@ -22,15 +22,55 @@ enum UserStatus {
 
 model User {
   id        String     @id @default(cuid())
-  email     String     @unique
-  firstName String
-  lastName  String
-  role      UserRole   @default(USER)
-  status    UserStatus @default(PENDING)
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
-  @@index([email])
-  @@index([status])
-  @@index([role])
+  // === Privy Authentication ===
+  privyId       String    @unique
+  privyDid      String?   @unique
+
+  // === Ethos Core Fields (READ-ONLY) ===
+  ethosProfileId    Int?      @unique
+  ethosUserId       Int?      @unique
+  ethosUsername     String?
+  ethosDisplayName  String?
+  ethosAvatarUrl    String?
+  ethosDescription  String?   @db.Text
+  ethosScore        Int?                    // Credibility score (0-2000)
+  ethosStatus       String?                 // ACTIVE, INACTIVE, etc.
+
+  // === Ethos Social Accounts (READ-ONLY) ===
+  ethosXHandle      String?                 // Twitter/X username
+  ethosXId          String?                 // Twitter/X numeric ID
+  ethosDiscordId    String?
+  ethosFarcasterId  String?
+  ethosTelegramId   String?
+
+  // === Ethos Wallets (READ-ONLY) ===
+  ethosPrimaryWallet String?               // Primary Ethereum address
+  ethosWallets       String[]              // All linked wallets
+
+  // === Ethos Stats (READ-ONLY) ===
+  ethosXpTotal           Int?
+  ethosXpStreakDays      Int?
+  ethosInfluenceFactor   Float?
+  ethosInfluencePercentile Float?
+
+  // === Ethos Raw Data (READ-ONLY) ===
+  ethosRawData      Json?                  // Full API response backup
+  ethosUserkeys     String[]               // All userkey identifiers
+  ethosLastSyncedAt DateTime?
+
+  // === App-Specific (Editable) ===
+  email             String?
+  customDisplayName String?                // User can override display name
+  preferences       Json?
+
+  // === System ===
+  role      UserRole   @default(USER)
+  status    UserStatus @default(ACTIVE)
+
+  @@index([ethosProfileId])
+  @@index([ethosPrimaryWallet])
+  @@index([ethosXHandle])
 }

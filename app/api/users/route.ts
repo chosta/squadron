@@ -1,8 +1,31 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import type { ApiResponse, User, CreateUserInput } from '@/types';
 
-export async function GET(request: NextRequest): Promise<NextResponse<ApiResponse<User[]>>> {
+interface UsersApiResponse {
+  success: boolean;
+  data?: Array<{
+    id: string;
+    privyId: string;
+    ethosDisplayName: string | null;
+    ethosUsername: string | null;
+    ethosAvatarUrl: string | null;
+    ethosScore: number | null;
+    email: string | null;
+    customDisplayName: string | null;
+    role: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+  }>;
+  error?: string;
+  meta?: {
+    total: number;
+    page: number;
+    limit: number;
+  };
+}
+
+export async function GET(request: NextRequest): Promise<NextResponse<UsersApiResponse>> {
   try {
     const searchParams = request.nextUrl.searchParams;
     const page = Math.max(1, parseInt(searchParams.get('page') || '1', 10));
@@ -14,6 +37,20 @@ export async function GET(request: NextRequest): Promise<NextResponse<ApiRespons
         skip,
         take: limit,
         orderBy: { createdAt: 'desc' },
+        select: {
+          id: true,
+          privyId: true,
+          ethosDisplayName: true,
+          ethosUsername: true,
+          ethosAvatarUrl: true,
+          ethosScore: true,
+          email: true,
+          customDisplayName: true,
+          role: true,
+          status: true,
+          createdAt: true,
+          updatedAt: true,
+        },
       }),
       prisma.user.count(),
     ]);
@@ -40,54 +77,5 @@ export async function GET(request: NextRequest): Promise<NextResponse<ApiRespons
   }
 }
 
-export async function POST(request: NextRequest): Promise<NextResponse<ApiResponse<User>>> {
-  try {
-    const body: CreateUserInput = await request.json();
-
-    if (!body.email || !body.firstName || !body.lastName) {
-      return NextResponse.json(
-        { success: false, error: 'Email, firstName, and lastName are required' },
-        { status: 400 }
-      );
-    }
-
-    const existingUser = await prisma.user.findUnique({
-      where: { email: body.email },
-    });
-
-    if (existingUser) {
-      return NextResponse.json(
-        { success: false, error: 'User with this email already exists' },
-        { status: 409 }
-      );
-    }
-
-    const user = await prisma.user.create({
-      data: {
-        email: body.email,
-        firstName: body.firstName,
-        lastName: body.lastName,
-        role: body.role || 'USER',
-        status: body.status || 'PENDING',
-      },
-    });
-
-    return NextResponse.json(
-      {
-        success: true,
-        data: {
-          ...user,
-          createdAt: user.createdAt.toISOString(),
-          updatedAt: user.updatedAt.toISOString(),
-        },
-      },
-      { status: 201 }
-    );
-  } catch (error) {
-    console.error('Error creating user:', error);
-    return NextResponse.json(
-      { success: false, error: 'Failed to create user' },
-      { status: 500 }
-    );
-  }
-}
+// Note: Users are created through the auth flow (/api/auth/sync), not this endpoint.
+// This POST is disabled for the new auth-based user model.
