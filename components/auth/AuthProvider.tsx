@@ -238,13 +238,22 @@ function UnconfiguredAuthProvider({ children }: { children: ReactNode }) {
  * Main AuthProvider with Privy wrapper
  */
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const [mounted, setMounted] = useState(false);
   const appId = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
+
+  // Wait for client-side mount - Privy can't initialize during SSR/static generation
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // During SSR or before mount, render unconfigured provider
+  if (!mounted) {
+    return <UnconfiguredAuthProvider>{children}</UnconfiguredAuthProvider>;
+  }
 
   // If no app ID or placeholder value, render without Privy
   if (!appId || appId === 'your_privy_app_id') {
-    if (typeof window !== 'undefined') {
-      console.warn('Privy not configured. Set NEXT_PUBLIC_PRIVY_APP_ID to enable authentication.');
-    }
+    console.warn('Privy not configured. Set NEXT_PUBLIC_PRIVY_APP_ID to enable authentication.');
     return <UnconfiguredAuthProvider>{children}</UnconfiguredAuthProvider>;
   }
 
