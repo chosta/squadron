@@ -193,6 +193,8 @@ npx vercel --prod
 
 This project uses standard `git push` - do NOT use `git review` (that's only for billing and storpool projects).
 
+**Commit Messages:** Do NOT use Linear task ID prefixes like `[PI-XXXX]` for this project. That format is only for the billing project. Squadron uses simple descriptive commit messages without task prefixes.
+
 ## Maintaining This Documentation
 
 **Proactively suggest updates to this CLAUDE.md** when you observe patterns that work well or discover important project knowledge. Examples:
