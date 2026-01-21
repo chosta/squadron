@@ -3,6 +3,7 @@ import { squadService } from '@/lib/services/squad-service';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { SquadCard } from '@/components/squads/SquadCard';
+import { SquadQuota } from '@/components/squads/SquadQuota';
 
 export default async function SquadsPage() {
   const session = await getSession();
@@ -21,15 +22,18 @@ export default async function SquadsPage() {
             Manage your squads and memberships.
           </p>
         </div>
-        <Link
-          href="/dashboard/squads/create"
-          className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors"
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-          </svg>
-          Create Squad
-        </Link>
+        <div className="flex items-center gap-4">
+          <SquadQuota variant="inline" />
+          <Link
+            href="/dashboard/squads/create"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            Create Squad
+          </Link>
+        </div>
       </div>
 
       {squads.length === 0 ? (

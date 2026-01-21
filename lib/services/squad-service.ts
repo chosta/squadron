@@ -13,6 +13,7 @@ import { calculateSquadCreationLimit, SQUAD_MIN_SIZE, SQUAD_MAX_SIZE } from '@/t
 
 const USER_SELECT = {
   id: true,
+  ethosProfileId: true,
   ethosDisplayName: true,
   ethosUsername: true,
   ethosAvatarUrl: true,
@@ -347,10 +348,7 @@ export class SquadService {
       throw new Error('User not found');
     }
 
-    // Placeholder for validator check
-    const isValidator = await this.checkIsValidator(userId);
-
-    const maxAllowed = calculateSquadCreationLimit(user.ethosScore, isValidator);
+    const maxAllowed = calculateSquadCreationLimit(user.ethosScore);
 
     const currentCount = await prisma.squad.count({
       where: { creatorId: userId },
@@ -361,16 +359,7 @@ export class SquadService {
       currentCount,
       maxAllowed,
       ethosScore: user.ethosScore,
-      isValidator,
     };
-  }
-
-  /**
-   * Placeholder for checking if user is an Ethos validator
-   */
-  private async checkIsValidator(_userId: string): Promise<boolean> {
-    // TODO: Implement when Ethos API supports validator check
-    return false;
   }
 
   /**
