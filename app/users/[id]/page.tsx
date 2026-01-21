@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { UserAvatar } from '@/components/users/UserAvatar';
 import { SquadCard } from '@/components/squads/SquadCard';
+import { SQUAD_ROLES } from '@/types/squad';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -108,9 +109,27 @@ export default async function UserProfilePage({ params }: PageProps) {
                   Squads ({publicSquads.length})
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {publicSquads.map((squad) => (
-                    <SquadCard key={squad.id} squad={squad} />
-                  ))}
+                  {publicSquads.map((squad) => {
+                    const membership = squad.members.find((m) => m.userId === id);
+                    const roleConfig = membership ? SQUAD_ROLES[membership.role] : null;
+
+                    return (
+                      <div key={squad.id} className="relative">
+                        {roleConfig && (
+                          <div className="absolute -top-2 -right-2 z-10">
+                            <span
+                              className="inline-flex items-center gap-1 bg-primary-100 text-primary-800 rounded-full font-medium text-xs px-2.5 py-1 shadow-sm border border-primary-200"
+                              title={roleConfig.description}
+                            >
+                              <span>{roleConfig.emoji}</span>
+                              <span>{roleConfig.label}</span>
+                            </span>
+                          </div>
+                        )}
+                        <SquadCard squad={squad} />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>

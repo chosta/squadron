@@ -28,6 +28,9 @@ enum SquadRole {
   DEV
   VIBE_CODER
   KOL
+  WHALE
+  RESEARCHER
+  COMMUNITY_BUILDER
 }
 
 enum InviteStatus {
@@ -87,6 +90,9 @@ model User {
   // === System ===
   role      UserRole   @default(USER)
   status    UserStatus @default(ACTIVE)
+
+  // === Primary Squad Role (for filtering/display) ===
+  primarySquadRole  SquadRole?
 
   // === Squad Relations ===
   createdSquads    Squad[]       @relation("SquadCreator")

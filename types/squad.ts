@@ -8,7 +8,10 @@ export type SquadRole =
   | 'TRADER'
   | 'DEV'
   | 'VIBE_CODER'
-  | 'KOL';
+  | 'KOL'
+  | 'WHALE'
+  | 'RESEARCHER'
+  | 'COMMUNITY_BUILDER';
 
 export type InviteStatus =
   | 'PENDING'
@@ -155,6 +158,21 @@ export const SQUAD_ROLES: Record<SquadRole, SquadRoleConfig> = {
     label: 'KOL',
     emoji: '🌟',
     description: 'Key Opinion Leader with influence',
+  },
+  WHALE: {
+    label: 'Whale',
+    emoji: '🐋',
+    description: 'Big staker with significant holdings',
+  },
+  RESEARCHER: {
+    label: 'Researcher',
+    emoji: '🔬',
+    description: 'Deep analysis and due diligence provider',
+  },
+  COMMUNITY_BUILDER: {
+    label: 'Community Builder',
+    emoji: '🤝',
+    description: 'Connects people and builds networks',
   },
 };
 

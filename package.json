@@ -14,7 +14,8 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
-    "db:seed-chat": "ts-node -O '{\"module\":\"CommonJS\"}' prisma/seed-chat-demo.ts"
+    "db:seed-chat": "ts-node -O '{\"module\":\"CommonJS\"}' prisma/seed-chat-demo.ts",
+    "db:seed-users": "ts-node -O '{\"module\":\"CommonJS\"}' prisma/seeds/seed-user-types.ts"
   },
   "prisma": {
     "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"

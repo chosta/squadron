@@ -1,3 +1,5 @@
+import type { SquadRole } from './squad';
+
 export type UserRole = 'ADMIN' | 'USER' | 'MODERATOR';
 export type UserStatus = 'ACTIVE' | 'INACTIVE' | 'PENDING' | 'SUSPENDED';
 
@@ -34,6 +36,7 @@ export interface User {
   preferences: unknown;
   role: UserRole;
   status: UserStatus;
+  primarySquadRole: SquadRole | null;
   createdAt: string;
   updatedAt: string;
 }

@@ -35,8 +35,15 @@ export default async function UsersPage({ searchParams }: PageProps) {
     ? (roleParam as SquadRole)
     : null;
 
-  // Build where clause
-  const where = selectedRole ? { primarySquadRole: selectedRole } : {};
+  // Build where clause - filter by squad roles OR primarySquadRole (fallback)
+  const where = selectedRole
+    ? {
+        OR: [
+          { squadMemberships: { some: { role: selectedRole } } },
+          { primarySquadRole: selectedRole },
+        ],
+      }
+    : {};
 
   const [users, total] = await Promise.all([
     prisma.user.findMany({
@@ -51,6 +58,9 @@ export default async function UsersPage({ searchParams }: PageProps) {
         ethosAvatarUrl: true,
         ethosScore: true,
         primarySquadRole: true,
+        squadMemberships: {
+          select: { role: true },
+        },
         _count: {
           select: { squadMemberships: true },
         },
@@ -102,7 +112,11 @@ export default async function UsersPage({ searchParams }: PageProps) {
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
               {users.map((user) => (
-                <UserCard key={user.id} user={user} />
+                <UserCard
+                  key={user.id}
+                  user={user}
+                  squadMemberships={user.squadMemberships}
+                />
               ))}
             </div>
 
