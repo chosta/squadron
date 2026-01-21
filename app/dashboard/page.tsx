@@ -4,6 +4,7 @@ import { inviteService } from '@/lib/services/invite-service';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/Card';
+import { PublicNavbar } from '@/components/navigation';
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -21,9 +22,12 @@ export default async function DashboardPage() {
   const captainedSquads = squads.filter((s) => s.captainId === session.userId);
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+    <div className="min-h-screen bg-gray-50">
+      <PublicNavbar />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="space-y-8">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
         <p className="mt-1 text-gray-600">
           Welcome back! Here&apos;s an overview of your squads.
         </p>
@@ -245,6 +249,8 @@ export default async function DashboardPage() {
           )}
         </CardContent>
       </Card>
+        </div>
+      </div>
     </div>
   );
 }
