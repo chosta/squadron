@@ -144,16 +144,34 @@ This project is deployed on Vercel. Use the following tools for Vercel operation
 
 ### Tool Priority
 
-1. **Vercel MCP** - Use for read operations and queries:
-   - `list_projects`, `get_project` - Project info
-   - `list_deployments`, `get_deployment` - Deployment status
-   - `get_deployment_build_logs` - Debug build failures
-   - `search_vercel_documentation` - Vercel docs lookup
-
-2. **Vercel CLI (`npx vercel`)** - Use for write operations:
-   - Environment variables (MCP doesn't support env management)
-   - Deployments from local
+1. **Vercel CLI (`npx vercel`)** - Preferred for most operations:
+   - Environment variables
+   - Monitoring build logs (real-time)
+   - Deployments
    - Project linking
+
+2. **Vercel MCP** - Use for queries when CLI isn't suitable:
+   - `search_vercel_documentation` - Vercel docs lookup
+   - `get_project` - Quick project info
+   - Fetching protected deployment URLs
+
+### Monitoring Builds After Push
+
+After `git push`, use the CLI to monitor the build in real-time:
+
+```bash
+# Watch latest deployment logs (best way to monitor after push)
+npx vercel logs --follow
+
+# Check latest deployment status
+npx vercel ls
+
+# Get logs for a specific deployment URL
+npx vercel logs <deployment-url>
+
+# Inspect latest deployment details
+npx vercel inspect
+```
 
 ### Environment Variable Management
 
@@ -185,8 +203,11 @@ npx vercel
 # Deploy to production
 npx vercel --prod
 
-# Check deployment status (prefer MCP)
-# Use: mcp__vercel__list_deployments or mcp__vercel__get_deployment
+# List recent deployments
+npx vercel ls
+
+# Promote a preview deployment to production
+npx vercel promote <deployment-url>
 ```
 
 ## Git Workflow
