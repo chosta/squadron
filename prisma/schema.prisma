@@ -20,6 +20,24 @@ enum UserStatus {
   SUSPENDED
 }
 
+enum SquadRole {
+  DEGEN
+  SUGAR_DADDY
+  ALPHA_CALLER
+  TRADER
+  DEV
+  VIBE_CODER
+  KOL
+}
+
+enum InviteStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
+  CANCELLED
+}
+
 model User {
   id        String     @id @default(cuid())
   createdAt DateTime   @default(now())
@@ -70,7 +88,82 @@ model User {
   role      UserRole   @default(USER)
   status    UserStatus @default(ACTIVE)
 
+  // === Squad Relations ===
+  createdSquads    Squad[]       @relation("SquadCreator")
+  captainedSquads  Squad[]       @relation("SquadCaptain")
+  squadMemberships SquadMember[]
+  sentInvites      SquadInvite[] @relation("SentInvites")
+  receivedInvites  SquadInvite[] @relation("ReceivedInvites")
+
   @@index([ethosProfileId])
   @@index([ethosPrimaryWallet])
   @@index([ethosXHandle])
+}
+
+model Squad {
+  id          String   @id @default(cuid())
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  name        String
+  description String?  @db.Text
+  avatarUrl   String?
+
+  minSize     Int      @default(2)
+  maxSize     Int      @default(5)  // 2-7
+  isFixedSize Boolean  @default(false)
+  isActive    Boolean  @default(false)  // True when >= 2 members
+
+  // Relations
+  creatorId   String
+  creator     User     @relation("SquadCreator", fields: [creatorId], references: [id])
+  captainId   String
+  captain     User     @relation("SquadCaptain", fields: [captainId], references: [id])
+
+  members     SquadMember[]
+  invites     SquadInvite[]
+
+  @@index([creatorId])
+  @@index([captainId])
+  @@index([isActive])
+}
+
+model SquadMember {
+  id        String    @id @default(cuid())
+  joinedAt  DateTime  @default(now())
+
+  squadId   String
+  squad     Squad     @relation(fields: [squadId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role      SquadRole
+
+  @@unique([squadId, userId])
+  @@index([squadId])
+  @@index([userId])
+}
+
+model SquadInvite {
+  id          String       @id @default(cuid())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  squadId     String
+  squad       Squad        @relation(fields: [squadId], references: [id], onDelete: Cascade)
+  inviterId   String
+  inviter     User         @relation("SentInvites", fields: [inviterId], references: [id], onDelete: Cascade)
+  inviteeId   String
+  invitee     User         @relation("ReceivedInvites", fields: [inviteeId], references: [id], onDelete: Cascade)
+
+  role        SquadRole    // Proposed role
+  status      InviteStatus @default(PENDING)
+  message     String?      @db.Text
+  expiresAt   DateTime
+  respondedAt DateTime?
+
+  @@unique([squadId, inviteeId, status])
+  @@index([squadId])
+  @@index([inviterId])
+  @@index([inviteeId])
+  @@index([status])
 }

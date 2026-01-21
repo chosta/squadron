@@ -7,6 +7,7 @@ import type { NextRequest } from 'next/server';
 const protectedRoutes = [
   '/admin',
   '/profile',
+  '/dashboard',
 ];
 
 /**
