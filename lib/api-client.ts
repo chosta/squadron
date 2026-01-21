@@ -10,6 +10,11 @@ import type {
   AcceptInviteResult,
   SquadInvite,
 } from '@/types/squad';
+import type {
+  ChatMessagesResponse,
+  SendMessageResponse,
+  DeleteMessageResponse,
+} from '@/types/chat';
 import { getBaseUrl } from './config';
 
 class ApiClient {
@@ -193,6 +198,35 @@ class ApiClient {
 
   async getSquadEligibility(): Promise<ApiResponse<SquadCreationEligibility>> {
     return this.request<SquadCreationEligibility>('/api/users/me/squads/eligibility');
+  }
+
+  // ==================== Chat ====================
+
+  async getChatMessages(
+    squadId: string,
+    options?: { before?: string; limit?: number }
+  ): Promise<ChatMessagesResponse> {
+    const params = new URLSearchParams();
+    if (options?.before) params.set('before', options.before);
+    if (options?.limit) params.set('limit', String(options.limit));
+
+    const queryString = params.toString();
+    const url = `/api/squads/${squadId}/chat${queryString ? `?${queryString}` : ''}`;
+
+    return this.request<ChatMessagesResponse['data']>(url) as Promise<ChatMessagesResponse>;
+  }
+
+  async sendChatMessage(squadId: string, content: string): Promise<SendMessageResponse> {
+    return this.request<SendMessageResponse['data']>(`/api/squads/${squadId}/chat`, {
+      method: 'POST',
+      body: JSON.stringify({ content }),
+    }) as Promise<SendMessageResponse>;
+  }
+
+  async deleteChatMessage(squadId: string, messageId: string): Promise<DeleteMessageResponse> {
+    return this.request<DeleteMessageResponse['data']>(`/api/squads/${squadId}/chat/${messageId}`, {
+      method: 'DELETE',
+    }) as Promise<DeleteMessageResponse>;
   }
 }
 

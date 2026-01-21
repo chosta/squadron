@@ -10,6 +10,7 @@ import { SquadMemberList } from '@/components/squads/SquadMemberList';
 import { SquadRoleSelector } from '@/components/squads/SquadRoleSelector';
 import { SquadRoleBadge } from '@/components/squads/SquadRoleBadge';
 import { UserSearchInput } from '@/components/invites/UserSearchInput';
+import { ChatRoom } from '@/components/chat';
 
 interface ManageSquadClientProps {
   squad: SquadWithMembers;
@@ -209,8 +210,8 @@ export function ManageSquadClient({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="space-y-6">
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
@@ -333,6 +334,15 @@ export function ManageSquadClient({
         </div>
 
         <div className="space-y-6">
+          {/* Chat Room */}
+          <div className="h-[700px] w-full">
+            <ChatRoom
+              squadId={squad.id}
+              squadName={squad.name}
+              isActive={squad.isActive}
+            />
+          </div>
+
           <Card>
             <CardHeader>
               <CardTitle>Squad Info</CardTitle>

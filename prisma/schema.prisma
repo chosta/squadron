@@ -94,6 +94,7 @@ model User {
   squadMemberships SquadMember[]
   sentInvites      SquadInvite[] @relation("SentInvites")
   receivedInvites  SquadInvite[] @relation("ReceivedInvites")
+  chatMessages     ChatMessage[]
 
   @@index([ethosProfileId])
   @@index([ethosPrimaryWallet])
@@ -120,8 +121,9 @@ model Squad {
   captainId   String
   captain     User     @relation("SquadCaptain", fields: [captainId], references: [id])
 
-  members     SquadMember[]
-  invites     SquadInvite[]
+  members      SquadMember[]
+  invites      SquadInvite[]
+  chatMessages ChatMessage[]
 
   @@index([creatorId])
   @@index([captainId])
@@ -166,4 +168,24 @@ model SquadInvite {
   @@index([inviterId])
   @@index([inviteeId])
   @@index([status])
+}
+
+model ChatMessage {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  content   String   @db.Text
+
+  squadId   String
+  squad     Squad    @relation(fields: [squadId], references: [id], onDelete: Cascade)
+
+  senderId  String
+  sender    User     @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  isEdited  Boolean  @default(false)
+  isDeleted Boolean  @default(false)
+
+  @@index([squadId, createdAt])
+  @@index([senderId])
 }
