@@ -87,6 +87,17 @@ export class EthosClient {
   }
 
   /**
+   * Get mutual vouchers for a user
+   * Returns an array of userkeys that have mutual vouches with the user
+   * @param ethosUserKey - e.g., "profileId:123"
+   */
+  async getMutualVouchers(ethosUserKey: string): Promise<EthosApiResponse<string[]>> {
+    return this.request<string[]>(
+      `/vouches/mutual/${encodeURIComponent(ethosUserKey)}`
+    );
+  }
+
+  /**
    * Parse userkeys array to extract social accounts and wallets
    *
    * Userkey formats:

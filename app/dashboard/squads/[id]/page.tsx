@@ -1,6 +1,7 @@
 import { getSession } from '@/lib/auth/session';
 import { squadService } from '@/lib/services/squad-service';
 import { inviteService } from '@/lib/services/invite-service';
+import { positionService } from '@/lib/services/position-service';
 import { redirect, notFound } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { SquadMemberList } from '@/components/squads/SquadMemberList';
@@ -37,10 +38,14 @@ export default async function ManageSquadPage({ params }: PageProps) {
     ? await inviteService.getSquadPendingInvites(id, session.userId)
     : [];
 
+  // Get open positions
+  const positions = await positionService.getSquadPositions(id);
+
   return (
     <ManageSquadClient
       squad={squad}
       pendingInvites={pendingInvites}
+      positions={positions}
       currentUserId={session.userId}
       isCaptain={isCaptain}
     />

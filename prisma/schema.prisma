@@ -41,6 +41,33 @@ enum InviteStatus {
   CANCELLED
 }
 
+enum EthosScoreTier {
+  BELOW_1400
+  TIER_1400
+  TIER_1500
+  TIER_1600
+  TIER_1700
+  TIER_1800
+  TIER_1900
+  TIER_2000_PLUS
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  WITHDRAWN
+  EXPIRED
+}
+
+enum NotificationType {
+  APPLICATION_RECEIVED
+  APPLICATION_APPROVED
+  APPLICATION_REJECTED
+  APPLICATION_EXPIRED
+  POSITION_DELETED
+}
+
 model User {
   id        String     @id @default(cuid())
   createdAt DateTime   @default(now())
@@ -102,6 +129,10 @@ model User {
   receivedInvites  SquadInvite[] @relation("ReceivedInvites")
   chatMessages     ChatMessage[]
 
+  // === Position Relations ===
+  applications     Application[]  @relation("Applications")
+  notifications    Notification[]
+
   @@index([ethosProfileId])
   @@index([ethosPrimaryWallet])
   @@index([ethosXHandle])
@@ -127,9 +158,10 @@ model Squad {
   captainId   String
   captain     User     @relation("SquadCaptain", fields: [captainId], references: [id])
 
-  members      SquadMember[]
-  invites      SquadInvite[]
-  chatMessages ChatMessage[]
+  members       SquadMember[]
+  invites       SquadInvite[]
+  chatMessages  ChatMessage[]
+  openPositions OpenPosition[]
 
   @@index([creatorId])
   @@index([captainId])
@@ -194,4 +226,69 @@ model ChatMessage {
 
   @@index([squadId, createdAt])
   @@index([senderId])
+}
+
+model OpenPosition {
+  id                  String         @id @default(cuid())
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  squadId             String
+  squad               Squad          @relation(fields: [squadId], references: [id], onDelete: Cascade)
+
+  role                SquadRole
+  description         String?        @db.Text
+  ethosScoreTier      EthosScoreTier @default(BELOW_1400)
+  requiresMutualVouch Boolean        @default(false)
+
+  expiresAt           DateTime       // 30 days from creation
+  isOpen              Boolean        @default(true)
+
+  applications        Application[]
+
+  @@index([squadId])
+  @@index([isOpen, expiresAt])
+  @@index([role])
+}
+
+model Application {
+  id          String            @id @default(cuid())
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  positionId  String
+  position    OpenPosition      @relation(fields: [positionId], references: [id], onDelete: Cascade)
+
+  applicantId String
+  applicant   User              @relation("Applications", fields: [applicantId], references: [id], onDelete: Cascade)
+
+  message     String?           @db.Text
+  status      ApplicationStatus @default(PENDING)
+  expiresAt   DateTime          // 7 days from application
+  respondedAt DateTime?
+
+  @@unique([positionId, applicantId])
+  @@index([positionId])
+  @@index([applicantId])
+  @@index([status])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  createdAt DateTime         @default(now())
+
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type      NotificationType
+  title     String
+  message   String           @db.Text
+  read      Boolean          @default(false)
+
+  squadId       String?
+  positionId    String?
+  applicationId String?
+
+  @@index([userId, read])
+  @@index([userId, createdAt])
 }

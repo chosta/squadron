@@ -7,6 +7,7 @@ import type {
 } from '@/types/squad';
 import { INVITE_EXPIRY_DAYS } from '@/types/squad';
 import { squadService } from './squad-service';
+import { positionService } from './position-service';
 
 const USER_SELECT = {
   id: true,
@@ -166,6 +167,9 @@ export class InviteService {
 
       return { invite: updatedInvite, member, squad };
     });
+
+    // Close excess positions if squad is now full
+    await positionService.closeExcessPositions(invite.squadId);
 
     return result as unknown as AcceptInviteResult;
   }

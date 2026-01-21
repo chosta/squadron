@@ -33,6 +33,17 @@ export default async function SquadsPage({ searchParams }: PageProps) {
           <p className="mt-2 text-gray-600">
             Browse all squads and find your next team.
           </p>
+          <div className="mt-4 flex gap-4">
+            <span className="px-4 py-2 text-sm font-medium text-primary-700 bg-primary-50 rounded-lg">
+              All Squads
+            </span>
+            <Link
+              href="/squads/positions"
+              className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              Open Positions
+            </Link>
+          </div>
         </div>
 
         {squads.length === 0 ? (

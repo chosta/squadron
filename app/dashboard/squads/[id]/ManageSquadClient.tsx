@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { SquadWithMembers, SquadInviteWithDetails, SquadRole } from '@/types/squad';
 import type { User } from '@/types';
+import type { OpenPositionWithApplications, CreatePositionInput } from '@/types/position';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { SquadMemberList } from '@/components/squads/SquadMemberList';
@@ -11,10 +12,13 @@ import { SquadRoleSelector } from '@/components/squads/SquadRoleSelector';
 import { SquadRoleBadge } from '@/components/squads/SquadRoleBadge';
 import { UserSearchInput } from '@/components/invites/UserSearchInput';
 import { ChatRoom } from '@/components/chat';
+import { PositionList } from '@/components/positions/PositionList';
+import { PositionForm } from '@/components/positions/PositionForm';
 
 interface ManageSquadClientProps {
   squad: SquadWithMembers;
   pendingInvites: SquadInviteWithDetails[];
+  positions: OpenPositionWithApplications[];
   currentUserId: string;
   isCaptain: boolean;
 }
@@ -22,17 +26,22 @@ interface ManageSquadClientProps {
 export function ManageSquadClient({
   squad: initialSquad,
   pendingInvites: initialPendingInvites,
+  positions: initialPositions,
   currentUserId,
   isCaptain,
 }: ManageSquadClientProps) {
   const router = useRouter();
   const [squad, setSquad] = useState(initialSquad);
   const [pendingInvites, setPendingInvites] = useState(initialPendingInvites);
+  const [positions, setPositions] = useState(initialPositions);
   const [showInviteForm, setShowInviteForm] = useState(false);
+  const [showPositionForm, setShowPositionForm] = useState(false);
   const [inviteRole, setInviteRole] = useState<SquadRole>('DEGEN');
   const [inviteMessage, setInviteMessage] = useState('');
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(false);
+  const [deletingPosition, setDeletingPosition] = useState<string | null>(null);
+  const [processingApplication, setProcessingApplication] = useState<string | null>(null);
 
   const handleRoleChange = async (memberId: string, role: SquadRole) => {
     const response = await fetch(`/api/squads/${squad.id}/members/${memberId}`, {
@@ -161,6 +170,110 @@ export function ManageSquadClient({
   const pendingInviteIds = pendingInvites.map((i) => i.inviteeId);
   const excludeUserIds = [...existingMemberIds, ...pendingInviteIds];
 
+  // Position handlers
+  const handleCreatePosition = async (input: CreatePositionInput) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/squads/${squad.id}/positions`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(input),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        // Refresh positions to get the full data with applications
+        const positionsRes = await fetch(`/api/squads/${squad.id}/positions`);
+        const positionsData = await positionsRes.json();
+        if (positionsData.success) {
+          setPositions(positionsData.data);
+        }
+        setShowPositionForm(false);
+      } else {
+        alert(result.error);
+      }
+    } catch (error) {
+      console.error('Failed to create position:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeletePosition = async (positionId: string) => {
+    if (!confirm('Are you sure you want to delete this position? All pending applications will be rejected.')) return;
+
+    setDeletingPosition(positionId);
+    try {
+      const response = await fetch(`/api/positions/${positionId}`, {
+        method: 'DELETE',
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setPositions((prev) => prev.filter((p) => p.id !== positionId));
+      } else {
+        alert(result.error);
+      }
+    } catch (error) {
+      console.error('Failed to delete position:', error);
+    } finally {
+      setDeletingPosition(null);
+    }
+  };
+
+  const handleApproveApplication = async (applicationId: string) => {
+    setProcessingApplication(applicationId);
+    try {
+      const response = await fetch(`/api/applications/${applicationId}/approve`, {
+        method: 'POST',
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        // Refresh the page to get updated data
+        router.refresh();
+      } else {
+        alert(result.error);
+      }
+    } catch (error) {
+      console.error('Failed to approve application:', error);
+    } finally {
+      setProcessingApplication(null);
+    }
+  };
+
+  const handleRejectApplication = async (applicationId: string) => {
+    setProcessingApplication(applicationId);
+    try {
+      const response = await fetch(`/api/applications/${applicationId}/reject`, {
+        method: 'POST',
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        // Update local state
+        setPositions((prev) =>
+          prev.map((p) => ({
+            ...p,
+            applications: p.applications.map((a) =>
+              a.id === applicationId ? { ...a, status: 'REJECTED' as const, respondedAt: new Date().toISOString() } : a
+            ),
+          }))
+        );
+      } else {
+        alert(result.error);
+      }
+    } catch (error) {
+      console.error('Failed to reject application:', error);
+    } finally {
+      setProcessingApplication(null);
+    }
+  };
+
+  const openPositionsCount = positions.filter((p) => p.isOpen && new Date(p.expiresAt) > new Date()).length;
+  const freeSlots = squad.maxSize - squad.members.length;
+  const canCreatePosition = isCaptain && openPositionsCount < freeSlots;
+
   return (
     <div className="space-y-6">
       <div className="flex items-start justify-between">
@@ -235,6 +348,40 @@ export function ManageSquadClient({
               />
             </CardContent>
           </Card>
+
+          {/* Open Positions Section (Captain only) */}
+          {isCaptain && (
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle>Open Positions ({openPositionsCount})</CardTitle>
+                  {canCreatePosition && (
+                    <Button size="sm" onClick={() => setShowPositionForm(true)}>
+                      Add Position
+                    </Button>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent>
+                {showPositionForm ? (
+                  <PositionForm
+                    onSubmit={handleCreatePosition}
+                    onCancel={() => setShowPositionForm(false)}
+                    isSubmitting={loading}
+                  />
+                ) : (
+                  <PositionList
+                    positions={positions}
+                    onDelete={handleDeletePosition}
+                    onApprove={handleApproveApplication}
+                    onReject={handleRejectApplication}
+                    isDeleting={deletingPosition ?? undefined}
+                    isProcessing={processingApplication ?? undefined}
+                  />
+                )}
+              </CardContent>
+            </Card>
+          )}
 
           {showInviteForm && isCaptain && (
             <Card>
