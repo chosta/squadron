@@ -102,3 +102,12 @@ export interface EthosApiResponse<T> {
   data?: T;
   error?: string;
 }
+
+export interface ValidatorNft {
+  contractAddress: string;
+  tokenId: string;
+  name: string | null;
+  description: string | null;
+  imageUrl: string | null;
+  thumbnailUrl: string | null;
+}

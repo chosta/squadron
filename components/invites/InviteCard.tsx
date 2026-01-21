@@ -1,14 +1,16 @@
 import type { SquadInviteWithDetails } from '@/types/squad';
 import { SquadRoleBadge } from '@/components/squads/SquadRoleBadge';
 import { InviteActions } from './InviteActions';
+import { ValidatorBadge } from '@/components/users/ValidatorBadge';
 
 interface InviteCardProps {
   invite: SquadInviteWithDetails;
   onAccept: (inviteId: string) => Promise<void>;
   onDecline: (inviteId: string) => Promise<void>;
+  inviterIsValidator?: boolean;
 }
 
-export function InviteCard({ invite, onAccept, onDecline }: InviteCardProps) {
+export function InviteCard({ invite, onAccept, onDecline, inviterIsValidator = false }: InviteCardProps) {
   const expiresAt = new Date(invite.expiresAt);
   const now = new Date();
   const daysUntilExpiry = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
@@ -35,11 +37,12 @@ export function InviteCard({ invite, onAccept, onDecline }: InviteCardProps) {
           <h3 className="text-lg font-semibold text-gray-900">
             {invite.squad.name}
           </h3>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-sm text-gray-600 mt-1 flex items-center gap-1">
             Invited by{' '}
             <span className="font-medium">
               {invite.inviter.ethosDisplayName || invite.inviter.ethosUsername || 'Unknown'}
             </span>
+            {inviterIsValidator && <ValidatorBadge size="sm" />}
           </p>
           <div className="mt-2 flex items-center gap-3">
             <span className="text-sm text-gray-500">Role:</span>

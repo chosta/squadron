@@ -4,6 +4,7 @@ import type { EthosData } from '@/types/auth';
 import { EthosScore } from './EthosScore';
 import { ConnectedAccounts } from './ConnectedAccounts';
 import { WalletList } from './WalletList';
+import { UserAvatarWithValidator } from '@/components/users/UserAvatarWithValidator';
 
 interface EthosFieldsProps {
   ethosData: EthosData;
@@ -40,19 +41,12 @@ export function EthosFields({ ethosData, onRefresh, isRefreshing }: EthosFieldsP
 
       {/* Profile Info */}
       <div className="flex items-start gap-4">
-        {ethosData.avatarUrl ? (
-          <img
-            src={ethosData.avatarUrl}
-            alt={ethosData.displayName || 'User'}
-            className="w-20 h-20 rounded-full object-cover"
-          />
-        ) : (
-          <div className="w-20 h-20 rounded-full bg-indigo-100 flex items-center justify-center">
-            <span className="text-2xl font-bold text-indigo-600">
-              {(ethosData.displayName || ethosData.username || 'U')[0].toUpperCase()}
-            </span>
-          </div>
-        )}
+        <UserAvatarWithValidator
+          src={ethosData.avatarUrl}
+          name={ethosData.displayName || ethosData.username}
+          size="xl"
+          ethosProfileId={ethosData.profileId}
+        />
         <div className="flex-1">
           <ReadOnlyField label="Display Name" value={ethosData.displayName} />
           <ReadOnlyField label="Username" value={ethosData.username ? `@${ethosData.username}` : null} />

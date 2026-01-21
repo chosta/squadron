@@ -1,12 +1,14 @@
 import Link from 'next/link';
 import type { SquadWithMembers } from '@/types/squad';
+import { ValidatorBadge } from '@/components/users/ValidatorBadge';
 
 interface SquadCardProps {
   squad: SquadWithMembers;
   showManage?: boolean;
+  captainIsValidator?: boolean;
 }
 
-export function SquadCard({ squad, showManage = false }: SquadCardProps) {
+export function SquadCard({ squad, showManage = false, captainIsValidator = false }: SquadCardProps) {
   const memberCount = squad._count?.members ?? squad.members.length;
 
   return (
@@ -59,6 +61,7 @@ export function SquadCard({ squad, showManage = false }: SquadCardProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               Captain: {squad.captain.ethosDisplayName || squad.captain.ethosUsername || 'Unknown'}
+              {captainIsValidator && <ValidatorBadge size="sm" />}
             </span>
           </div>
         </div>

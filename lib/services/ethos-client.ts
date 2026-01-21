@@ -1,4 +1,4 @@
-import type { EthosUser, EthosSocialAccounts, EthosApiResponse } from '@/types/ethos';
+import type { EthosUser, EthosSocialAccounts, EthosApiResponse, ValidatorNft } from '@/types/ethos';
 
 const ETHOS_API_BASE = 'https://api.ethos.network/api/v2';
 
@@ -73,6 +73,17 @@ export class EthosClient {
    */
   async getUserByProfileId(profileId: number): Promise<EthosApiResponse<EthosUser>> {
     return this.request<EthosUser>(`/user/by/profileId/${profileId}`);
+  }
+
+  /**
+   * Check if user owns a validator NFT
+   * Returns an array of validator NFT objects (empty if none owned)
+   * @param ethosUserKey - e.g., "profileId:123"
+   */
+  async checkOwnsValidator(ethosUserKey: string): Promise<EthosApiResponse<ValidatorNft[]>> {
+    return this.request<ValidatorNft[]>(
+      `/nfts/user/${encodeURIComponent(ethosUserKey)}/owns-validator`
+    );
   }
 
   /**

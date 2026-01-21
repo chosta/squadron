@@ -1,8 +1,11 @@
+import { ValidatorBadge } from './ValidatorBadge';
+
 interface UserAvatarProps {
   src?: string | null;
   name?: string | null;
   size?: 'sm' | 'md' | 'lg' | 'xl';
   className?: string;
+  isValidator?: boolean;
 }
 
 const sizeClasses = {
@@ -12,23 +15,39 @@ const sizeClasses = {
   xl: 'w-20 h-20 text-2xl',
 };
 
-export function UserAvatar({ src, name, size = 'md', className = '' }: UserAvatarProps) {
+const badgeSizeMap = {
+  sm: 'sm' as const,
+  md: 'sm' as const,
+  lg: 'md' as const,
+  xl: 'lg' as const,
+};
+
+export function UserAvatar({ src, name, size = 'md', className = '', isValidator = false }: UserAvatarProps) {
   const initial = (name || '?').charAt(0).toUpperCase();
   const classes = `${sizeClasses[size]} ${className}`;
 
-  if (src) {
-    return (
-      <img
-        src={src}
-        alt={name || ''}
-        className={`${classes} rounded-full object-cover`}
-      />
-    );
-  }
-
-  return (
+  const avatar = src ? (
+    <img
+      src={src}
+      alt={name || ''}
+      className={`${classes} rounded-full object-cover`}
+    />
+  ) : (
     <div className={`${classes} rounded-full bg-gray-200 flex items-center justify-center`}>
       <span className="text-gray-600 font-semibold">{initial}</span>
     </div>
   );
+
+  if (isValidator) {
+    return (
+      <div className="relative inline-block">
+        {avatar}
+        <div className="absolute -bottom-0.5 -right-0.5">
+          <ValidatorBadge size={badgeSizeMap[size]} />
+        </div>
+      </div>
+    );
+  }
+
+  return avatar;
 }

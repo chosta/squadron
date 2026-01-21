@@ -57,13 +57,13 @@ export interface SquadInvite {
 
 // Extended types with relations
 export interface SquadMemberWithUser extends SquadMember {
-  user: Pick<User, 'id' | 'ethosDisplayName' | 'ethosUsername' | 'ethosAvatarUrl' | 'ethosScore'>;
+  user: Pick<User, 'id' | 'ethosProfileId' | 'ethosDisplayName' | 'ethosUsername' | 'ethosAvatarUrl' | 'ethosScore'>;
 }
 
 export interface SquadWithMembers extends Squad {
   members: SquadMemberWithUser[];
-  creator: Pick<User, 'id' | 'ethosDisplayName' | 'ethosUsername' | 'ethosAvatarUrl'>;
-  captain: Pick<User, 'id' | 'ethosDisplayName' | 'ethosUsername' | 'ethosAvatarUrl'>;
+  creator: Pick<User, 'id' | 'ethosProfileId' | 'ethosDisplayName' | 'ethosUsername' | 'ethosAvatarUrl'>;
+  captain: Pick<User, 'id' | 'ethosProfileId' | 'ethosDisplayName' | 'ethosUsername' | 'ethosAvatarUrl'>;
   _count?: {
     members: number;
   };
@@ -71,8 +71,8 @@ export interface SquadWithMembers extends Squad {
 
 export interface SquadInviteWithDetails extends SquadInvite {
   squad: Pick<Squad, 'id' | 'name' | 'avatarUrl'>;
-  inviter: Pick<User, 'id' | 'ethosDisplayName' | 'ethosUsername' | 'ethosAvatarUrl'>;
-  invitee: Pick<User, 'id' | 'ethosDisplayName' | 'ethosUsername' | 'ethosAvatarUrl'>;
+  inviter: Pick<User, 'id' | 'ethosProfileId' | 'ethosDisplayName' | 'ethosUsername' | 'ethosAvatarUrl'>;
+  invitee: Pick<User, 'id' | 'ethosProfileId' | 'ethosDisplayName' | 'ethosUsername' | 'ethosAvatarUrl'>;
 }
 
 // Input types
@@ -105,7 +105,6 @@ export interface SquadCreationEligibility {
   currentCount: number;
   maxAllowed: number;
   ethosScore: number | null;
-  isValidator: boolean;
 }
 
 export interface AcceptInviteResult {
@@ -160,18 +159,13 @@ export const SQUAD_ROLES: Record<SquadRole, SquadRoleConfig> = {
 };
 
 // Squad creation limits based on Ethos score
-export function calculateSquadCreationLimit(ethosScore: number | null, isValidator: boolean = false): number {
-  const baseLimit = (() => {
-    if (!ethosScore) return 1;
-    if (ethosScore >= 2000) return 5;
-    if (ethosScore >= 1800) return 4;
-    if (ethosScore >= 1600) return 3;
-    if (ethosScore >= 1400) return 2;
-    return 1;
-  })();
-
-  // Validator bonus (placeholder for future implementation)
-  return isValidator ? baseLimit + 1 : baseLimit;
+export function calculateSquadCreationLimit(ethosScore: number | null): number {
+  if (!ethosScore) return 1;
+  if (ethosScore >= 2000) return 5;
+  if (ethosScore >= 1800) return 4;
+  if (ethosScore >= 1600) return 3;
+  if (ethosScore >= 1400) return 2;
+  return 1;
 }
 
 // Constants

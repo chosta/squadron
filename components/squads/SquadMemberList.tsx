@@ -5,6 +5,7 @@ import type { SquadMemberWithUser, SquadRole } from '@/types/squad';
 import { SquadRoleBadge } from './SquadRoleBadge';
 import { SquadRoleSelector } from './SquadRoleSelector';
 import { Button } from '@/components/ui/Button';
+import { UserAvatarWithValidator } from '@/components/users/UserAvatarWithValidator';
 
 interface SquadMemberListProps {
   members: SquadMemberWithUser[];
@@ -80,19 +81,12 @@ export function SquadMemberList({
             className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg"
           >
             <div className="flex-shrink-0">
-              {member.user.ethosAvatarUrl ? (
-                <img
-                  src={member.user.ethosAvatarUrl}
-                  alt={member.user.ethosDisplayName || ''}
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
-                  <span className="text-gray-600 text-sm font-medium">
-                    {(member.user.ethosDisplayName || member.user.ethosUsername || '?').charAt(0).toUpperCase()}
-                  </span>
-                </div>
-              )}
+              <UserAvatarWithValidator
+                src={member.user.ethosAvatarUrl}
+                name={member.user.ethosDisplayName || member.user.ethosUsername}
+                size="md"
+                ethosProfileId={member.user.ethosProfileId}
+              />
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">

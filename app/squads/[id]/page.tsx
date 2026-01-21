@@ -2,7 +2,7 @@ import { squadService } from '@/lib/services/squad-service';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { SquadRoleBadge } from '@/components/squads/SquadRoleBadge';
-import { UserAvatar } from '@/components/users/UserAvatar';
+import { UserAvatarWithValidator } from '@/components/users/UserAvatarWithValidator';
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -83,10 +83,11 @@ export default async function SquadPage({ params }: PageProps) {
                     href={`/users/${member.userId}`}
                     className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
                   >
-                    <UserAvatar
+                    <UserAvatarWithValidator
                       src={member.user.ethosAvatarUrl}
                       name={member.user.ethosDisplayName || member.user.ethosUsername}
                       size="lg"
+                      ethosProfileId={member.user.ethosProfileId}
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">

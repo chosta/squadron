@@ -10,6 +10,7 @@ import { squadService } from './squad-service';
 
 const USER_SELECT = {
   id: true,
+  ethosProfileId: true,
   ethosDisplayName: true,
   ethosUsername: true,
   ethosAvatarUrl: true,
