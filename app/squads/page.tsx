@@ -1,4 +1,5 @@
 import { squadService } from '@/lib/services/squad-service';
+import { getSession } from '@/lib/auth/session';
 import Link from 'next/link';
 import { SquadCard } from '@/components/squads/SquadCard';
 import { PublicNavbar } from '@/components/navigation';
@@ -12,8 +13,16 @@ export default async function SquadsPage({ searchParams }: PageProps) {
   const page = Math.max(1, parseInt(params.page || '1', 10));
   const limit = 12;
 
-  const { squads, total } = await squadService.listSquads({ page, limit, activeOnly: false });
+  const [{ squads, total }, session] = await Promise.all([
+    squadService.listSquads({ page, limit, activeOnly: false }),
+    getSession(),
+  ]);
   const totalPages = Math.ceil(total / limit);
+
+  // Get user's squad IDs for quick lookup
+  const userSquadIds = session
+    ? new Set((await squadService.getUserSquads(session.userId)).map((s) => s.id))
+    : new Set<string>();
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -48,7 +57,11 @@ export default async function SquadsPage({ searchParams }: PageProps) {
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {squads.map((squad) => (
-                <SquadCard key={squad.id} squad={squad} />
+                <SquadCard
+                  key={squad.id}
+                  squad={squad}
+                  showManage={userSquadIds.has(squad.id)}
+                />
               ))}
             </div>
 
