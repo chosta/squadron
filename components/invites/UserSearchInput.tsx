@@ -80,19 +80,19 @@ export function UserSearchInput({
         }}
         onFocus={() => setShowDropdown(true)}
         placeholder={placeholder}
-        className="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+        className="block w-full px-3 py-2 border border-space-600 rounded-lg bg-space-700 text-hull-100 text-sm placeholder:text-hull-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
       />
       {showDropdown && (query.length >= 2 || loading) && (
         <div
           ref={dropdownRef}
-          className="absolute z-10 mt-1 w-full bg-white rounded-lg border border-gray-200 shadow-lg max-h-60 overflow-auto"
+          className="absolute z-10 mt-1 w-full bg-space-700 rounded-lg border border-space-600 shadow-lg max-h-60 overflow-auto"
         >
           {loading ? (
-            <div className="p-3 text-sm text-gray-500 text-center">
+            <div className="p-3 text-sm text-hull-400 text-center">
               Searching...
             </div>
           ) : users.length === 0 ? (
-            <div className="p-3 text-sm text-gray-500 text-center">
+            <div className="p-3 text-sm text-hull-400 text-center">
               No users found
             </div>
           ) : (
@@ -100,7 +100,7 @@ export function UserSearchInput({
               <button
                 key={user.id}
                 onClick={() => handleSelect(user)}
-                className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 text-left"
+                className="w-full flex items-center gap-3 p-3 hover:bg-space-600 text-left"
               >
                 {user.ethosAvatarUrl ? (
                   <img
@@ -109,18 +109,18 @@ export function UserSearchInput({
                     className="w-8 h-8 rounded-full object-cover"
                   />
                 ) : (
-                  <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-600 text-xs font-medium">
+                  <div className="w-8 h-8 rounded-full bg-space-600 flex items-center justify-center">
+                    <span className="text-hull-300 text-xs font-medium">
                       {(user.ethosDisplayName || user.ethosUsername || '?').charAt(0).toUpperCase()}
                     </span>
                   </div>
                 )}
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
+                  <p className="text-sm font-medium text-hull-100 truncate">
                     {user.ethosDisplayName || user.ethosUsername || 'Unknown'}
                   </p>
                   {user.ethosScore !== null && (
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-hull-400">
                       Score: {user.ethosScore}
                     </p>
                   )}

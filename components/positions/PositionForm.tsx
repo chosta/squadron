@@ -34,7 +34,7 @@ export function PositionForm({ onSubmit, onCancel, isSubmitting = false }: Posit
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-hull-300 mb-2">
           Role
         </label>
         <SquadRoleSelector
@@ -45,7 +45,7 @@ export function PositionForm({ onSubmit, onCancel, isSubmitting = false }: Posit
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="description" className="block text-sm font-medium text-hull-300 mb-2">
           Description (Optional)
         </label>
         <textarea
@@ -55,12 +55,12 @@ export function PositionForm({ onSubmit, onCancel, isSubmitting = false }: Posit
           placeholder="Describe what you're looking for in this role..."
           rows={3}
           disabled={isSubmitting}
-          className="block w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-primary-500 focus:ring-primary-500 disabled:bg-gray-100"
+          className="block w-full rounded-lg border border-space-600 bg-space-700 px-3 py-2 text-hull-100 placeholder-hull-500 focus:border-primary-500 focus:ring-primary-500 disabled:bg-space-800 disabled:opacity-50"
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-hull-300 mb-2">
           Minimum Ethos Score
         </label>
         <EthosScoreTierSelect
@@ -68,7 +68,7 @@ export function PositionForm({ onSubmit, onCancel, isSubmitting = false }: Posit
           onChange={setEthosScoreTier}
           disabled={isSubmitting}
         />
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-hull-500">
           Only users with at least this score can apply
         </p>
       </div>
@@ -80,15 +80,15 @@ export function PositionForm({ onSubmit, onCancel, isSubmitting = false }: Posit
           checked={requiresMutualVouch}
           onChange={(e) => setRequiresMutualVouch(e.target.checked)}
           disabled={isSubmitting}
-          className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+          className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-space-600 bg-space-700 rounded"
         />
-        <label htmlFor="requiresMutualVouch" className="text-sm text-gray-700">
+        <label htmlFor="requiresMutualVouch" className="text-sm text-hull-300">
           Require mutual vouch with captain
         </label>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-hull-300 mb-2">
           Benefits (Optional)
         </label>
         <BenefitsSelect
@@ -96,7 +96,7 @@ export function PositionForm({ onSubmit, onCancel, isSubmitting = false }: Posit
           onChange={setBenefits}
           disabled={isSubmitting}
         />
-        <p className="mt-1 text-xs text-gray-500">
+        <p className="mt-1 text-xs text-hull-500">
           What will the member get from this position?
         </p>
       </div>
@@ -106,7 +106,7 @@ export function PositionForm({ onSubmit, onCancel, isSubmitting = false }: Posit
           type="button"
           onClick={onCancel}
           disabled={isSubmitting}
-          className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+          className="flex-1 px-4 py-2 text-sm font-medium text-hull-200 bg-space-600 rounded-lg hover:bg-space-500 transition-colors disabled:opacity-50"
         >
           Cancel
         </button>

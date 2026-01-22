@@ -28,10 +28,10 @@ export function BenefitsSelect({ value, onChange, disabled = false }: BenefitsSe
             key={key}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer transition-colors ${
               disabled
-                ? 'bg-gray-100 cursor-not-allowed opacity-50'
+                ? 'bg-space-800 cursor-not-allowed opacity-50'
                 : isSelected
-                  ? 'border-emerald-500 bg-emerald-50'
-                  : 'border-gray-300 hover:border-gray-400'
+                  ? 'border-emerald-500 bg-emerald-900/30'
+                  : 'border-space-600 bg-space-700 hover:border-space-500'
             }`}
           >
             <input
@@ -42,7 +42,7 @@ export function BenefitsSelect({ value, onChange, disabled = false }: BenefitsSe
               className="sr-only"
             />
             <span>{config.emoji}</span>
-            <span className={`text-sm ${isSelected ? 'text-emerald-700 font-medium' : 'text-gray-700'}`}>
+            <span className={`text-sm ${isSelected ? 'text-emerald-400 font-medium' : 'text-hull-300'}`}>
               {config.label}
             </span>
           </label>
