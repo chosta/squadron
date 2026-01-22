@@ -41,7 +41,7 @@ export function ChatMessage({ message, isOwn, showAvatar, onDelete }: ChatMessag
   if (message.isDeleted) {
     return (
       <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
-        <div className="px-4 py-2 rounded-lg bg-gray-100 text-gray-400 italic text-sm">
+        <div className="px-4 py-2 rounded-lg bg-space-700 text-hull-500 italic text-sm">
           Message deleted
         </div>
       </div>
@@ -78,7 +78,7 @@ export function ChatMessage({ message, isOwn, showAvatar, onDelete }: ChatMessag
         <div className="flex flex-col">
           {/* Sender name (only for first message in a group) */}
           {showAvatar && !isOwn && (
-            <span className="text-xs text-gray-500 mb-1 ml-1">
+            <span className="text-xs text-hull-400 mb-1 ml-1">
               {displayName}
             </span>
           )}
@@ -88,7 +88,7 @@ export function ChatMessage({ message, isOwn, showAvatar, onDelete }: ChatMessag
               relative px-4 py-2 rounded-2xl
               ${isOwn
                 ? 'bg-primary-600 text-white rounded-br-md'
-                : 'bg-gray-100 text-gray-900 rounded-bl-md'
+                : 'bg-space-700 text-hull-100 rounded-bl-md'
               }
             `}
           >
@@ -96,7 +96,7 @@ export function ChatMessage({ message, isOwn, showAvatar, onDelete }: ChatMessag
             <p className="whitespace-pre-wrap break-words">{message.content}</p>
 
             {/* Timestamp and edited indicator */}
-            <div className={`flex items-center gap-1 mt-1 text-xs ${isOwn ? 'text-primary-200' : 'text-gray-400'}`}>
+            <div className={`flex items-center gap-1 mt-1 text-xs ${isOwn ? 'text-primary-200' : 'text-hull-400'}`}>
               <span>{timeAgo}</span>
               {message.isEdited && <span>· edited</span>}
             </div>

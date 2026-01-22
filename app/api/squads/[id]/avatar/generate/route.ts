@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth/session';
+import { prisma } from '@/lib/prisma';
 import { squadService } from '@/lib/services/squad-service';
 import { GeminiClient, type MemberAvatarInfo } from '@/lib/services/gemini-client';
 import type { SquadWithMembers } from '@/types/squad';
+
+const MAX_AVATAR_REGENERATIONS = 3;
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -11,6 +14,7 @@ interface RouteParams {
 interface AvatarGenerateApiResponse {
   success: boolean;
   data?: SquadWithMembers;
+  remainingAttempts?: number;
   error?: string;
 }
 
@@ -52,6 +56,18 @@ export async function POST(
       return NextResponse.json(
         { success: false, error: 'Only the captain can generate squad avatars' },
         { status: 403 }
+      );
+    }
+
+    // Check regeneration limit
+    if (squad.avatarRegenerationCount >= MAX_AVATAR_REGENERATIONS) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Avatar regeneration limit reached',
+          remainingAttempts: 0
+        },
+        { status: 429 }
       );
     }
 
@@ -105,12 +121,20 @@ export async function POST(
       captainRole: captainMember?.role || 'Captain',
     });
 
-    // Update the squad with the new avatar
-    const updatedSquad = await squadService.updateSquad(squadId, session.userId, {
-      avatarUrl,
+    // Update the squad with the new avatar and increment regeneration count
+    await prisma.squad.update({
+      where: { id: squadId },
+      data: {
+        avatarUrl,
+        avatarRegenerationCount: squad.avatarRegenerationCount + 1,
+      },
     });
 
-    return NextResponse.json({ success: true, data: updatedSquad });
+    // Get the updated squad with all relations
+    const updatedSquad = await squadService.getSquad(squadId);
+    const remainingAttempts = MAX_AVATAR_REGENERATIONS - (squad.avatarRegenerationCount + 1);
+
+    return NextResponse.json({ success: true, data: updatedSquad, remainingAttempts });
   } catch (error) {
     console.error('Error generating squad avatar:', error);
     const message = error instanceof Error ? error.message : 'Failed to generate avatar';

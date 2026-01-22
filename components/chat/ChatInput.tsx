@@ -49,7 +49,7 @@ export function ChatInput({ onSend, disabled, placeholder = 'Type a message...' 
   const canSend = content.trim().length > 0 && !isOverLimit && !disabled;
 
   return (
-    <div className="border-t border-gray-200 p-4 bg-white rounded-b-lg">
+    <div className="border-t border-space-700 p-4 bg-space-800 rounded-b-lg">
       <div className="flex items-end gap-2">
         {/* Textarea */}
         <div className="flex-1 relative">
@@ -64,16 +64,17 @@ export function ChatInput({ onSend, disabled, placeholder = 'Type a message...' 
             rows={1}
             className={`
               w-full px-4 py-2 rounded-2xl border resize-none
+              bg-space-700 text-hull-100
               focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent
-              disabled:bg-gray-100 disabled:cursor-not-allowed
-              ${isOverLimit ? 'border-red-500' : 'border-gray-300'}
+              disabled:bg-space-700 disabled:cursor-not-allowed
+              ${isOverLimit ? 'border-red-500' : 'border-space-600'}
             `}
             style={{ maxHeight: '120px' }}
           />
 
           {/* Character count (shown when approaching limit) */}
           {content.length > CHAT_DEFAULTS.MAX_MESSAGE_LENGTH * 0.8 && (
-            <span className={`absolute bottom-1 right-3 text-xs ${isOverLimit ? 'text-red-500' : 'text-gray-400'}`}>
+            <span className={`absolute bottom-1 right-3 text-xs ${isOverLimit ? 'text-red-500' : 'text-hull-500'}`}>
               {content.length}/{CHAT_DEFAULTS.MAX_MESSAGE_LENGTH}
             </span>
           )}
@@ -87,7 +88,7 @@ export function ChatInput({ onSend, disabled, placeholder = 'Type a message...' 
             p-2 rounded-full transition-colors
             ${canSend
               ? 'bg-primary-600 text-white hover:bg-primary-700'
-              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              : 'bg-space-700 text-hull-500 cursor-not-allowed'
             }
           `}
           title="Send message"
@@ -104,7 +105,7 @@ export function ChatInput({ onSend, disabled, placeholder = 'Type a message...' 
       </div>
 
       {/* Helper text */}
-      <p className="text-xs text-gray-400 mt-1 ml-2">
+      <p className="text-xs text-hull-500 mt-1 ml-2">
         Press Enter to send, Shift+Enter for new line
       </p>
     </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import type { SquadWithMembers, SquadInviteWithDetails, SquadRole } from '@/types/squad';
@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/Button';
 import { SquadMemberList } from '@/components/squads/SquadMemberList';
 import { SquadRoleSelector } from '@/components/squads/SquadRoleSelector';
 import { SquadRoleBadge } from '@/components/squads/SquadRoleBadge';
+import { SquadReputation } from '@/components/squads/SquadReputation';
 import { UserSearchInput } from '@/components/invites/UserSearchInput';
 import { ChatRoom } from '@/components/chat';
 import { PositionList } from '@/components/positions/PositionList';
@@ -45,35 +46,14 @@ export function ManageSquadClient({
   const [processingApplication, setProcessingApplication] = useState<string | null>(null);
   const [isGeneratingAvatar, setIsGeneratingAvatar] = useState(false);
   const [avatarError, setAvatarError] = useState<string | null>(null);
+  const [remainingAvatarAttempts, setRemainingAvatarAttempts] = useState(
+    3 - (initialSquad.avatarRegenerationCount || 0)
+  );
   const [showDismantleModal, setShowDismantleModal] = useState(false);
-  const [validatorCount, setValidatorCount] = useState(0);
 
   // Calculate cumulative reputation
   const cumulativeReputation = useMemo(() => {
     return squad.members.reduce((sum, member) => sum + (member.user.ethosScore || 0), 0);
-  }, [squad.members]);
-
-  // Fetch validators for all members
-  useEffect(() => {
-    const profileIds = squad.members
-      .map((m) => m.user.ethosProfileId)
-      .filter((id): id is number => id !== null);
-
-    if (profileIds.length === 0) return;
-
-    fetch('/api/users/validators', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ profileIds }),
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.validators) {
-          const count = Object.values(data.validators).filter(Boolean).length;
-          setValidatorCount(count);
-        }
-      })
-      .catch(console.error);
   }, [squad.members]);
 
   const handleRoleChange = async (memberId: string, role: SquadRole) => {
@@ -203,6 +183,11 @@ export function ManageSquadClient({
   };
 
   const handleGenerateAvatar = async () => {
+    if (remainingAvatarAttempts <= 0) {
+      setAvatarError('Avatar regeneration limit reached');
+      return;
+    }
+
     setIsGeneratingAvatar(true);
     setAvatarError(null);
 
@@ -217,8 +202,16 @@ export function ManageSquadClient({
           ...prev,
           avatarUrl: result.data.avatarUrl,
         }));
+        if (typeof result.remainingAttempts === 'number') {
+          setRemainingAvatarAttempts(result.remainingAttempts);
+        } else {
+          setRemainingAvatarAttempts((prev) => prev - 1);
+        }
       } else {
         setAvatarError(result.error || 'Failed to generate avatar');
+        if (result.remainingAttempts === 0) {
+          setRemainingAvatarAttempts(0);
+        }
       }
     } catch (error) {
       console.error('Failed to generate avatar:', error);
@@ -340,7 +333,7 @@ export function ManageSquadClient({
     <div className="space-y-6">
       <Link
         href="/dashboard/squads"
-        className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+        className="inline-flex items-center gap-1 text-sm text-hull-400 hover:text-hull-200 transition-colors"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -368,8 +361,8 @@ export function ManageSquadClient({
           {isCaptain && (
             <button
               onClick={handleGenerateAvatar}
-              disabled={isGeneratingAvatar}
-              className="text-xs text-primary-600 hover:text-primary-700 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center gap-1"
+              disabled={isGeneratingAvatar || remainingAvatarAttempts <= 0}
+              className="text-xs text-primary-600 hover:text-primary-700 disabled:text-hull-500 disabled:cursor-not-allowed flex items-center gap-1"
             >
               {isGeneratingAvatar ? (
                 <>
@@ -379,12 +372,19 @@ export function ManageSquadClient({
                   </svg>
                   Generating...
                 </>
+              ) : remainingAvatarAttempts <= 0 ? (
+                <>
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
+                  </svg>
+                  Limit reached
+                </>
               ) : (
                 <>
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
-                  {squad.avatarUrl ? 'Regenerate' : 'Generate Avatar'}
+                  {squad.avatarUrl ? 'Regenerate' : 'Generate Avatar'} ({remainingAvatarAttempts} left)
                 </>
               )}
             </button>
@@ -394,19 +394,13 @@ export function ManageSquadClient({
         {/* Name & Description */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-2xl font-bold text-gray-900">{squad.name}</h1>
-            {squad.isActive ? (
-              <span className="px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                Active
-              </span>
-            ) : (
-              <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
-                Inactive
-              </span>
+            <h1 className="text-2xl font-bold text-hull-100">{squad.name}</h1>
+            {cumulativeReputation > 0 && (
+              <SquadReputation score={cumulativeReputation} size="md" />
             )}
           </div>
           {squad.description && (
-            <p className="mt-2 text-sm text-gray-500 line-clamp-3">{squad.description}</p>
+            <p className="mt-2 text-sm text-hull-400 line-clamp-3">{squad.description}</p>
           )}
           {avatarError && (
             <p className="mt-1 text-sm text-red-600">{avatarError}</p>
@@ -414,26 +408,26 @@ export function ManageSquadClient({
         </div>
 
         {/* Squad Info - Rows */}
-        <div className="flex-shrink-0 text-sm space-y-2 bg-gray-50 rounded-lg px-4 py-3">
+        <div className="flex-shrink-0 text-sm space-y-2 bg-space-700 rounded-lg px-4 py-3">
           <div className="flex justify-between gap-4">
-            <span className="text-gray-400">Size</span>
-            <span className="text-gray-700 font-medium">
+            <span className="text-hull-400">Size</span>
+            <span className="text-hull-200 font-medium">
               {squad.minSize}-{squad.maxSize} members
             </span>
           </div>
           <div className="flex justify-between gap-4">
-            <span className="text-gray-400">Fixed</span>
-            <span className="text-gray-700 font-medium">{squad.isFixedSize ? 'Yes' : 'No'}</span>
+            <span className="text-hull-400">Fixed</span>
+            <span className="text-hull-200 font-medium">{squad.isFixedSize ? 'Yes' : 'No'}</span>
           </div>
           <div className="flex justify-between gap-4">
-            <span className="text-gray-400">Captain</span>
-            <span className="text-gray-700 font-medium truncate max-w-[150px]">
+            <span className="text-hull-400">Captain</span>
+            <span className="text-hull-200 font-medium truncate max-w-[150px]">
               {squad.captain.ethosDisplayName || squad.captain.ethosUsername}
             </span>
           </div>
           <div className="flex justify-between gap-4">
-            <span className="text-gray-400">Created by</span>
-            <span className="text-gray-700 font-medium truncate max-w-[150px]">
+            <span className="text-hull-400">Created by</span>
+            <span className="text-hull-200 font-medium truncate max-w-[150px]">
               {squad.creator.ethosDisplayName || squad.creator.ethosUsername}
             </span>
           </div>
@@ -461,19 +455,7 @@ export function ManageSquadClient({
           <Card>
             <CardHeader>
               <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle>Members ({squad.members.length}/{squad.maxSize})</CardTitle>
-                  <div className="flex gap-4 mt-1 text-sm text-gray-500">
-                    <span>
-                      Total Reputation: <span className="font-medium text-gray-700">{cumulativeReputation.toLocaleString()}</span>
-                    </span>
-                    {validatorCount > 0 && (
-                      <span>
-                        Validators: <span className="font-medium text-purple-600">{validatorCount}</span>
-                      </span>
-                    )}
-                  </div>
-                </div>
+                <CardTitle>Members ({squad.members.length}/{squad.maxSize})</CardTitle>
                 {isCaptain && squad.members.length < squad.maxSize && (
                   <Button size="sm" onClick={() => setShowInviteForm(true)}>
                     Invite Member
@@ -535,7 +517,7 @@ export function ManageSquadClient({
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-hull-300 mb-1">
                     Search User
                   </label>
                   <UserSearchInput
@@ -546,7 +528,7 @@ export function ManageSquadClient({
                 </div>
 
                 {selectedUser && (
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                  <div className="flex items-center gap-3 p-3 bg-space-700 rounded-lg">
                     {selectedUser.ethosAvatarUrl ? (
                       <img
                         src={selectedUser.ethosAvatarUrl}
@@ -554,23 +536,23 @@ export function ManageSquadClient({
                         className="w-10 h-10 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                        <span className="text-gray-600 font-medium">
+                      <div className="w-10 h-10 rounded-full bg-space-600 flex items-center justify-center">
+                        <span className="text-hull-300 font-medium">
                           {(selectedUser.ethosDisplayName || selectedUser.ethosUsername || '?').charAt(0).toUpperCase()}
                         </span>
                       </div>
                     )}
                     <div className="flex-1">
-                      <p className="font-medium text-gray-900">
+                      <p className="font-medium text-hull-100">
                         {selectedUser.ethosDisplayName || selectedUser.ethosUsername}
                       </p>
                       {selectedUser.ethosScore !== null && (
-                        <p className="text-sm text-gray-500">Score: {selectedUser.ethosScore}</p>
+                        <p className="text-sm text-hull-400">Score: {selectedUser.ethosScore}</p>
                       )}
                     </div>
                     <button
                       onClick={() => setSelectedUser(null)}
-                      className="text-gray-400 hover:text-gray-600"
+                      className="text-hull-400 hover:text-hull-200"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -580,14 +562,14 @@ export function ManageSquadClient({
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-hull-300 mb-1">
                     Proposed Role
                   </label>
                   <SquadRoleSelector value={inviteRole} onChange={setInviteRole} />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-hull-300 mb-1">
                     Message (optional)
                   </label>
                   <textarea
@@ -596,7 +578,7 @@ export function ManageSquadClient({
                     placeholder="Add a personal message to your invite..."
                     rows={2}
                     maxLength={200}
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                    className="block w-full px-3 py-2 border border-space-600 rounded-lg text-sm bg-space-700 text-hull-100 placeholder:text-hull-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                   />
                 </div>
 
@@ -645,7 +627,7 @@ export function ManageSquadClient({
                 {pendingInvites.map((invite) => (
                   <div
                     key={invite.id}
-                    className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
+                    className="flex items-center gap-3 p-3 bg-space-700 rounded-lg"
                   >
                     {invite.invitee.ethosAvatarUrl ? (
                       <img
@@ -654,21 +636,21 @@ export function ManageSquadClient({
                         className="w-8 h-8 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center">
-                        <span className="text-gray-600 text-xs font-medium">
+                      <div className="w-8 h-8 rounded-full bg-space-600 flex items-center justify-center">
+                        <span className="text-hull-300 text-xs font-medium">
                           {(invite.invitee.ethosDisplayName || invite.invitee.ethosUsername || '?').charAt(0).toUpperCase()}
                         </span>
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
+                      <p className="text-sm font-medium text-hull-100 truncate">
                         {invite.invitee.ethosDisplayName || invite.invitee.ethosUsername}
                       </p>
                       <SquadRoleBadge role={invite.role} size="sm" />
                     </div>
                     <button
                       onClick={() => handleCancelInvite(invite.id)}
-                      className="text-gray-400 hover:text-red-600"
+                      className="text-hull-400 hover:text-red-600"
                       title="Cancel invite"
                     >
                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -690,17 +672,17 @@ export function ManageSquadClient({
             className="absolute inset-0 bg-black/50"
             onClick={() => setShowDismantleModal(false)}
           />
-          <div className="relative bg-white rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
+          <div className="relative bg-space-800 rounded-lg shadow-xl max-w-md w-full mx-4 p-6">
             <div className="flex items-center gap-3 mb-4">
               <div className="flex-shrink-0 w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
                 <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900">Dismantle Squad</h3>
+              <h3 className="text-lg font-semibold text-hull-100">Dismantle Squad</h3>
             </div>
             <div className="mb-6">
-              <p className="text-gray-600 mb-3">
+              <p className="text-hull-400 mb-3">
                 Are you sure you want to dismantle <span className="font-semibold">{squad.name}</span>?
               </p>
               <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700">

@@ -28,6 +28,7 @@ export interface Squad {
   name: string;
   description: string | null;
   avatarUrl: string | null;
+  avatarRegenerationCount: number;
   minSize: number;
   maxSize: number;
   isFixedSize: boolean;

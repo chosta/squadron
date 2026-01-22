@@ -26,15 +26,15 @@ export function ApplicationCard({
   const daysUntilExpiry = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
   const statusColors: Record<string, string> = {
-    PENDING: 'bg-yellow-100 text-yellow-800',
-    APPROVED: 'bg-green-100 text-green-800',
-    REJECTED: 'bg-red-100 text-red-800',
-    WITHDRAWN: 'bg-gray-100 text-gray-600',
-    EXPIRED: 'bg-gray-100 text-gray-600',
+    PENDING: 'bg-yellow-900/50 text-yellow-400',
+    APPROVED: 'bg-green-900/50 text-green-400',
+    REJECTED: 'bg-red-900/50 text-red-400',
+    WITHDRAWN: 'bg-space-600 text-hull-400',
+    EXPIRED: 'bg-space-600 text-hull-400',
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-4">
+    <div className="bg-space-800 rounded-lg border border-space-600 p-4">
       <div className="flex items-start gap-3">
         <UserAvatarWithValidator
           src={applicant.ethosAvatarUrl}
@@ -44,7 +44,7 @@ export function ApplicationCard({
         />
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <span className="font-medium text-gray-900 truncate">
+            <span className="font-medium text-hull-100 truncate">
               {applicant.ethosDisplayName || applicant.ethosUsername || 'Unknown'}
             </span>
             <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[application.status]}`}>
@@ -52,16 +52,16 @@ export function ApplicationCard({
             </span>
           </div>
           {applicant.ethosScore && (
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-hull-400">
               Score: {applicant.ethosScore}
             </p>
           )}
           {application.message && (
-            <p className="mt-2 text-sm text-gray-600 italic">
+            <p className="mt-2 text-sm text-hull-300 italic">
               &ldquo;{application.message}&rdquo;
             </p>
           )}
-          <p className="mt-1 text-xs text-gray-400">
+          <p className="mt-1 text-xs text-hull-500">
             Applied {appliedAt.toLocaleDateString()}
             {isPending && daysUntilExpiry > 0 && ` • Expires in ${daysUntilExpiry} day${daysUntilExpiry === 1 ? '' : 's'}`}
           </p>
@@ -79,7 +79,7 @@ export function ApplicationCard({
           <button
             onClick={() => onReject(application.id)}
             disabled={isProcessing}
-            className="flex-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+            className="flex-1 px-3 py-1.5 text-sm font-medium text-hull-200 bg-space-600 rounded-lg hover:bg-space-500 transition-colors disabled:opacity-50"
           >
             Reject
           </button>

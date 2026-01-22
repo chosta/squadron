@@ -89,7 +89,7 @@ export function SquadMemberList({
         return (
           <div
             key={member.id}
-            className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg"
+            className="flex items-center gap-4 p-4 bg-space-700 rounded-lg"
           >
             <div className="flex-shrink-0">
               <UserAvatarWithValidator
@@ -101,22 +101,22 @@ export function SquadMemberList({
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="font-medium text-gray-900 truncate">
+                <span className="font-medium text-hull-100 truncate">
                   {member.user.ethosDisplayName || member.user.ethosUsername || 'Unknown'}
                 </span>
                 {isMemberCaptain && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-900/50 text-yellow-400">
                     Captain
                   </span>
                 )}
                 {isCurrentUser && (
-                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-900/50 text-blue-400">
                     You
                   </span>
                 )}
               </div>
               {member.user.ethosScore !== null && (
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-hull-400">
                   Ethos Score: {member.user.ethosScore}
                 </p>
               )}
@@ -144,7 +144,7 @@ export function SquadMemberList({
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => setEditingMember(member.id)}
-                        className="p-1 text-gray-400 hover:text-gray-600"
+                        className="p-1 text-hull-400 hover:text-hull-200"
                         title="Edit role"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -156,7 +156,7 @@ export function SquadMemberList({
                           <button
                             onClick={() => handleTransfer(member.userId)}
                             disabled={loading === member.userId}
-                            className="p-1 text-gray-400 hover:text-yellow-600"
+                            className="p-1 text-hull-400 hover:text-yellow-400"
                             title="Make captain"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -166,7 +166,7 @@ export function SquadMemberList({
                           <button
                             onClick={() => handleRemove(member.id)}
                             disabled={loading === member.id}
-                            className="p-1 text-gray-400 hover:text-red-600"
+                            className="p-1 text-hull-400 hover:text-red-500"
                             title="Remove member"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

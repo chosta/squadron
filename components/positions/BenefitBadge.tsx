@@ -15,7 +15,7 @@ export function BenefitBadge({ benefit, size = 'md' }: BenefitBadgeProps) {
     : 'px-2.5 py-1 text-sm';
 
   return (
-    <span className={`inline-flex items-center gap-1 rounded-full font-medium bg-emerald-100 text-emerald-800 ${sizeClasses}`}>
+    <span className={`inline-flex items-center gap-1 rounded-full font-medium bg-emerald-900/50 text-emerald-400 ${sizeClasses}`}>
       <span>{config.emoji}</span>
       <span>{config.label}</span>
     </span>

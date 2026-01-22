@@ -20,7 +20,7 @@ export function ApplicationList({
 }: ApplicationListProps) {
   if (applications.length === 0) {
     return (
-      <p className="text-sm text-gray-500 text-center py-4">
+      <p className="text-sm text-hull-400 text-center py-4">
         No applications yet
       </p>
     );

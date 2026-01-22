@@ -28,7 +28,7 @@ export function PositionList({
 
   if (positions.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 text-hull-400">
         <p>No open positions</p>
       </div>
     );
@@ -45,23 +45,23 @@ export function PositionList({
           <div
             key={position.id}
             className={`border rounded-lg overflow-hidden ${
-              isOpen ? 'border-gray-200' : 'border-gray-100 bg-gray-50'
+              isOpen ? 'border-space-600' : 'border-space-700 bg-space-800/50'
             }`}
           >
             <div
-              className="p-4 cursor-pointer hover:bg-gray-50"
+              className="p-4 cursor-pointer hover:bg-space-700/50"
               onClick={() => setExpandedPosition(isExpanded ? null : position.id)}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <SquadRoleBadge role={position.role} size="sm" />
                   {!isOpen && (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-space-700 text-hull-400">
                       Closed
                     </span>
                   )}
                   {pendingCount > 0 && (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-900/50 text-amber-400">
                       {pendingCount} pending
                     </span>
                   )}
@@ -74,7 +74,7 @@ export function PositionList({
                         onDelete(position.id);
                       }}
                       disabled={isDeleting === position.id}
-                      className="p-1 text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
+                      className="p-1 text-hull-400 hover:text-red-500 transition-colors disabled:opacity-50"
                       title="Delete position"
                     >
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,7 +83,7 @@ export function PositionList({
                     </button>
                   )}
                   <svg
-                    className={`w-5 h-5 text-gray-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-hull-400 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -93,7 +93,7 @@ export function PositionList({
                 </div>
               </div>
               {position.description && (
-                <p className="mt-2 text-sm text-gray-600 line-clamp-1">
+                <p className="mt-2 text-sm text-hull-300 line-clamp-1">
                   {position.description}
                 </p>
               )}
@@ -108,8 +108,8 @@ export function PositionList({
             </div>
 
             {isExpanded && (
-              <div className="border-t border-gray-200 bg-gray-50 p-4">
-                <h4 className="text-sm font-medium text-gray-700 mb-3">
+              <div className="border-t border-space-600 bg-space-700/50 p-4">
+                <h4 className="text-sm font-medium text-hull-200 mb-3">
                   Applications ({position.applications.length})
                 </h4>
                 <ApplicationList

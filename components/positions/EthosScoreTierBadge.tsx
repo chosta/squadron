@@ -15,7 +15,7 @@ export function EthosScoreTierBadge({ tier, size = 'md' }: EthosScoreTierBadgePr
     : 'px-2.5 py-1 text-sm';
 
   return (
-    <span className={`inline-flex items-center rounded-full font-medium bg-purple-100 text-purple-800 ${sizeClasses}`}>
+    <span className={`inline-flex items-center rounded-full font-medium bg-purple-900/50 text-purple-400 ${sizeClasses}`}>
       {config.label}
     </span>
   );

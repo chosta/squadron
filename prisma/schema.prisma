@@ -155,6 +155,7 @@ model Squad {
   name        String
   description String?  @db.Text
   avatarUrl   String?
+  avatarRegenerationCount Int @default(0)
 
   minSize     Int      @default(2)
   maxSize     Int      @default(5)  // 2-7
