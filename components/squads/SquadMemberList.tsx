@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import type { SquadMemberWithUser, SquadRole } from '@/types/squad';
 import { SquadRoleBadge } from './SquadRoleBadge';
 import { SquadRoleSelector } from './SquadRoleSelector';
@@ -28,6 +28,17 @@ export function SquadMemberList({
 }: SquadMemberListProps) {
   const [editingMember, setEditingMember] = useState<string | null>(null);
   const [loading, setLoading] = useState<string | null>(null);
+
+  // Sort members: captain first, then by reputation score (descending)
+  const sortedMembers = useMemo(() => {
+    return [...members].sort((a, b) => {
+      // Captain always first
+      if (a.userId === captainId) return -1;
+      if (b.userId === captainId) return 1;
+      // Then by reputation score (descending)
+      return (b.user.ethosScore || 0) - (a.user.ethosScore || 0);
+    });
+  }, [members, captainId]);
 
   const handleRoleChange = async (memberId: string, role: SquadRole) => {
     if (!onRoleChange) return;
@@ -70,7 +81,7 @@ export function SquadMemberList({
 
   return (
     <div className="space-y-4">
-      {members.map((member) => {
+      {sortedMembers.map((member) => {
         const isMemberCaptain = member.userId === captainId;
         const isCurrentUser = member.userId === currentUserId;
         const canEdit = isCaptain && !isCurrentUser;

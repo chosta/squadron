@@ -60,6 +60,7 @@ export function ChatInput({ onSend, disabled, placeholder = 'Type a message...' 
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             disabled={disabled}
+            tabIndex={-1}
             rows={1}
             className={`
               w-full px-4 py-2 rounded-2xl border resize-none

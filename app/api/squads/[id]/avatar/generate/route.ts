@@ -1,0 +1,119 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { getSession } from '@/lib/auth/session';
+import { squadService } from '@/lib/services/squad-service';
+import { GeminiClient, type MemberAvatarInfo } from '@/lib/services/gemini-client';
+import type { SquadWithMembers } from '@/types/squad';
+
+interface RouteParams {
+  params: Promise<{ id: string }>;
+}
+
+interface AvatarGenerateApiResponse {
+  success: boolean;
+  data?: SquadWithMembers;
+  error?: string;
+}
+
+export async function POST(
+  request: NextRequest,
+  { params }: RouteParams
+): Promise<NextResponse<AvatarGenerateApiResponse>> {
+  try {
+    // Check authentication
+    const session = await getSession();
+    if (!session) {
+      return NextResponse.json(
+        { success: false, error: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    // Check if Gemini is configured
+    if (!GeminiClient.isConfigured()) {
+      return NextResponse.json(
+        { success: false, error: 'Image generation service not configured' },
+        { status: 503 }
+      );
+    }
+
+    const { id: squadId } = await params;
+
+    // Get squad with members
+    const squad = await squadService.getSquad(squadId);
+    if (!squad) {
+      return NextResponse.json(
+        { success: false, error: 'Squad not found' },
+        { status: 404 }
+      );
+    }
+
+    // Verify user is captain
+    if (squad.captainId !== session.userId) {
+      return NextResponse.json(
+        { success: false, error: 'Only the captain can generate squad avatars' },
+        { status: 403 }
+      );
+    }
+
+    const geminiClient = GeminiClient.getInstance();
+
+    // Separate captain from other members
+    const captainMember = squad.members.find(m => m.userId === squad.captainId);
+    const otherMembers = squad.members.filter(m => m.userId !== squad.captainId);
+
+    // Prepare member info for avatar analysis
+    const membersToAnalyze: MemberAvatarInfo[] = otherMembers.map(m => ({
+      avatarUrl: m.user.ethosAvatarUrl || '',
+      role: m.role,
+      isCaptain: false,
+    }));
+
+    const captainAvatarInfo: MemberAvatarInfo = {
+      avatarUrl: captainMember?.user.ethosAvatarUrl || '',
+      role: captainMember?.role || 'Captain',
+      isCaptain: true,
+    };
+
+    // Step 1: Analyze member avatars
+    let memberDescriptions: string[] = [];
+    let captainDescription = 'Team leader';
+
+    try {
+      // Analyze captain's avatar
+      if (captainAvatarInfo.avatarUrl) {
+        const captainAnalysis = await geminiClient.analyzeAvatars([captainAvatarInfo]);
+        captainDescription = captainAnalysis[0] || 'Team leader';
+      }
+
+      // Analyze other members' avatars
+      if (membersToAnalyze.length > 0) {
+        memberDescriptions = await geminiClient.analyzeAvatars(membersToAnalyze);
+      }
+    } catch (analysisError) {
+      console.error('Avatar analysis failed, using defaults:', analysisError);
+      // Continue with default descriptions
+      memberDescriptions = otherMembers.map(() => 'Team member');
+    }
+
+    // Step 2: Generate the squad avatar
+    const avatarUrl = await geminiClient.generateSquadAvatar({
+      squadName: squad.name,
+      description: squad.description || undefined,
+      memberDescriptions,
+      captainDescription,
+      memberRoles: otherMembers.map(m => m.role),
+      captainRole: captainMember?.role || 'Captain',
+    });
+
+    // Update the squad with the new avatar
+    const updatedSquad = await squadService.updateSquad(squadId, session.userId, {
+      avatarUrl,
+    });
+
+    return NextResponse.json({ success: true, data: updatedSquad });
+  } catch (error) {
+    console.error('Error generating squad avatar:', error);
+    const message = error instanceof Error ? error.message : 'Failed to generate avatar';
+    return NextResponse.json({ success: false, error: message }, { status: 500 });
+  }
+}

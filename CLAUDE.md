@@ -153,21 +153,28 @@ See `.claude/skills/seed/SKILL.md` for full documentation.
 - Use Client Components for interactivity
 - Style with Tailwind CSS utility classes
 
-## Testing Local Setup
+## Starting the Dev Server
 
-Before starting the dev server, always check if one is already running:
+**Default command:** `yarn start:dev` (uses port 3001, required for Privy)
 
-```bash
-# Check for existing server on port 3001
-lsof -i :3001
-```
-
-If a server is already running, do NOT start a new one. The default port is **3001**.
-
-Only start a new server if nothing is running:
+When user says "start the dev server", ALWAYS use:
 ```bash
 yarn start:dev
 ```
+
+This script (`scripts/start-dev.sh`) handles:
+- Starting Docker PostgreSQL if not running
+- Running on port 3001 (required for Privy authentication)
+- Proper environment setup
+
+**Before starting**, check if a server is already running:
+```bash
+lsof -i :3001
+```
+
+If a server is already running, do NOT start a new one.
+
+**DO NOT use** `yarn dev` directly - it defaults to port 3000 which breaks Privy auth.
 
 ## Vercel Integration
 

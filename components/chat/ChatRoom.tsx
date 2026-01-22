@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useChat } from '@/lib/hooks/useChat';
 import { useAuth } from '@/lib/hooks/useAuth';
 import { ChatMessage } from './ChatMessage';
@@ -16,6 +16,7 @@ export function ChatRoom({ squadId, squadName, isActive }: ChatRoomProps) {
   const { user } = useAuth();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const [hasInitiallyMounted, setHasInitiallyMounted] = useState(false);
 
   const {
     messages,
@@ -31,12 +32,16 @@ export function ChatRoom({ squadId, squadName, isActive }: ChatRoomProps) {
     enabled: isActive,
   });
 
-  // Auto-scroll to bottom when new messages arrive
+  // Auto-scroll to bottom when new messages arrive (skip on initial mount)
   useEffect(() => {
+    if (!hasInitiallyMounted) {
+      setHasInitiallyMounted(true);
+      return;
+    }
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [messages]);
+  }, [messages, hasInitiallyMounted]);
 
   // Handle scroll for loading more messages
   const handleScroll = () => {

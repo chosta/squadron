@@ -130,7 +130,7 @@ Abstract geometric shapes, mascot character, or symbolic imagery preferred.
 
 ### 5. Create Squad
 
-Use the seeder orchestrator to create the squad:
+**Option A: Use the seeder orchestrator (if available):**
 
 ```typescript
 import {
@@ -152,10 +152,34 @@ const result = await createSquadWithMembers({
 });
 ```
 
+**Option B: Direct Prisma creation (more reliable):**
+
+```typescript
+import { prisma } from './lib/prisma';
+
+const squad = await prisma.squad.create({
+  data: {
+    name: 'SlumDoggos',
+    description: 'They want to launch a token called $SLUM',
+    maxSize: 5,  // NOT maxMembers!
+    isActive: true,  // NOT status!
+    creator: { connect: { id: captainUserId } },
+    captain: { connect: { id: captainUserId } },
+    members: {
+      create: members.map(m => ({
+        user: { connect: { id: m.userId } },
+        role: m.role
+      }))
+    }
+  }
+});
+```
+
 **Rules:**
-- First resolved user becomes **creator** and **captain**
+- First resolved user becomes **creator** and **captain** (set on Squad, NOT on member)
+- Captain is a Squad-level field, not a SquadMember field
 - If no roles specified, assign from default rotation
-- Squad is **active** when 2+ members
+- Squad `isActive: true` when 2+ members
 
 ### 6. Report Results
 
@@ -318,6 +342,96 @@ cd /Users/chosta/Developer/projects/squadron && yarn db:studio
 | Gemini API error | Continue without image, log warning |
 | Squad name exists | Ask user to choose different name |
 | No members resolved | Abort and report which users failed |
+| Unique constraint on ethosUserId | User already exists - find them in DB instead |
+
+## Squad Schema Reference (CRITICAL)
+
+**ALWAYS check this before creating squads to avoid Prisma errors.**
+
+```prisma
+model Squad {
+  id          String   @id @default(cuid())
+  name        String
+  description String?  @db.Text
+  avatarUrl   String?
+
+  minSize     Int      @default(2)
+  maxSize     Int      @default(5)  // NOT maxMembers!
+  isFixedSize Boolean  @default(false)
+  isActive    Boolean  @default(false)  // NOT status!
+
+  // REQUIRED relations (both creator AND captain)
+  creatorId   String
+  creator     User     @relation("SquadCreator", ...)
+  captainId   String
+  captain     User     @relation("SquadCaptain", ...)
+
+  members     SquadMember[]
+}
+
+model SquadMember {
+  squadId   String
+  userId    String
+  role      SquadRole
+  // NOTE: No isCaptain field! Captain is set at Squad level via captainId
+}
+```
+
+**Common mistakes to avoid:**
+- ❌ `maxMembers` → ✅ `maxSize`
+- ❌ `status: 'ACTIVE'` → ✅ `isActive: true`
+- ❌ `seeded: true` → ✅ Field doesn't exist on Squad
+- ❌ `creatorId: 'xxx'` → ✅ `creator: { connect: { id: 'xxx' } }`
+- ❌ `isCaptain: true` on member → ✅ `captain: { connect: { id: 'xxx' } }` on Squad
+
+## Correct Squad Creation Example
+
+```typescript
+const squad = await prisma.squad.create({
+  data: {
+    name: 'Squad Name',
+    description: 'Description here',
+    maxSize: 5,
+    isActive: true,
+    creator: { connect: { id: creatorUserId } },
+    captain: { connect: { id: captainUserId } },
+    members: {
+      create: [
+        { user: { connect: { id: member1Id } }, role: 'ALPHA_CALLER' },
+        { user: { connect: { id: member2Id } }, role: 'KOL' },
+      ]
+    }
+  },
+  include: {
+    captain: true,
+    members: { include: { user: true } }
+  }
+});
+```
+
+## Continuous Improvement Protocol
+
+**After every seed operation that encounters errors:**
+
+1. **Document the error** - Note the exact Prisma validation message
+2. **Identify the root cause** - Schema mismatch, wrong field name, missing relation
+3. **Update this skill file** - Add the fix to the "Common mistakes" section
+4. **Suggest schema sync** - If helpers are outdated, suggest updating `scenario-seeder.ts`
+
+**Auto-suggest improvements when:**
+- A field name doesn't exist (schema changed)
+- A relation requires `connect` syntax
+- A helper function throws unexpected errors
+- The seeder scripts are missing functionality
+
+**Template for suggesting improvements:**
+```
+🔧 **Improvement Suggestion**
+- Problem: [what went wrong]
+- Root cause: [why it happened]
+- Fix applied: [how it was resolved]
+- Recommendation: [update skill/script/schema]
+```
 
 ## Environment Variables
 
@@ -333,3 +447,18 @@ GEMINI_API_KEY=your_gemini_api_key  # Optional, for image generation
 - Gemini client: `lib/services/gemini-client.ts`
 - Ethos client: `lib/services/ethos-client.ts`
 - Squad service: `lib/services/squad-service.ts`
+- **Prisma schema:** `prisma/schema.prisma` (always check this for field names!)
+
+## Improvement Log
+
+Track fixes and learnings to continuously improve this skill.
+
+| Date | Issue | Fix | Suggestion |
+|------|-------|-----|------------|
+| 2026-01-22 | Used `maxMembers` instead of `maxSize` | Updated to use correct schema field | Added schema reference section |
+| 2026-01-22 | Used `status: 'ACTIVE'` instead of `isActive: true` | Fixed field name | Added to common mistakes |
+| 2026-01-22 | Used `creatorId` directly instead of `connect` | Use Prisma relation syntax | Added correct creation example |
+| 2026-01-22 | Set `isCaptain` on SquadMember | Captain is Squad-level via `captainId` | Documented in schema reference |
+| 2026-01-22 | Used non-existent `seeded` field on Squad | Removed - field doesn't exist | Added to common mistakes |
+
+**When adding to this log:** Include date, what went wrong, how it was fixed, and any skill updates made.

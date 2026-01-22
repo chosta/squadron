@@ -19,5 +19,5 @@ yarn db:generate
 # Push schema (idempotent)
 yarn db:push
 
-echo "Starting dev server..."
-yarn dev
+echo "Starting dev server on port 3001..."
+yarn dev --port 3001
