@@ -33,7 +33,12 @@ const SQUAD_WITH_MEMBERS_INCLUDE = {
   members: { select: MEMBER_SELECT },
   creator: { select: USER_SELECT },
   captain: { select: USER_SELECT },
-  _count: { select: { members: true } },
+  _count: {
+    select: {
+      members: true,
+      openPositions: { where: { isOpen: true } },
+    },
+  },
 } as const;
 
 export class SquadService {

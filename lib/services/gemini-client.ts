@@ -155,7 +155,16 @@ export class GeminiClient {
       ? `The team's mission: ${description}.`
       : '';
 
-    return `Create a stylized crypto/web3 squad logo for a team called "${squadName}". ${descriptionPart} Style: Modern, cyberpunk aesthetic with neon accents, professional and clean design. Make it suitable as a profile avatar/icon. No text, letters, or words in the image. Abstract geometric shapes, mascot character, or symbolic imagery preferred.`;
+    return `Create a wide landscape banner image (4:3 aspect ratio, wider than tall) for a crypto/web3 squad called "${squadName}". ${descriptionPart}
+
+Requirements:
+- MUST be landscape/horizontal orientation (wider than tall)
+- Full-bleed artwork filling the entire canvas edge-to-edge
+- NO white borders, margins, padding, or empty space
+- Rich detailed background covering entire image
+- Modern cyberpunk aesthetic with neon accents
+- No text, letters, or words
+- Abstract geometric shapes, mascot character, or symbolic imagery`;
   }
 
   /**
@@ -295,7 +304,7 @@ Keep it concise and descriptive.`;
       ? `Team mission: ${description}`
       : 'A collaborative team working together';
 
-    return `Create a stylized team illustration for "${squadName}" (${memberCount} members).
+    return `Create a wide landscape team banner (4:3 aspect ratio, wider than tall) for "${squadName}" (${memberCount} members).
 
 ${descriptionPart}
 
@@ -303,10 +312,15 @@ Team composition (represent each member artistically):
 - CAPTAIN (center, prominent): ${captainDescription} - Role: ${captainRole}
 ${memberLines}
 
+CRITICAL requirements:
+- MUST be landscape/horizontal orientation (wider than tall, like a banner)
+- Full-bleed artwork filling the entire canvas edge-to-edge
+- NO white borders, margins, padding, or empty space anywhere
+- Rich detailed background covering the entire image
+
 Style guidelines:
 - ${theme} aesthetic
-- 4:3 landscape format, suitable as a team banner
-- The captain should be at the center/forefront, larger or more prominent
+- Captain at center/forefront, larger or more prominent
 - Other members arranged around the captain
 - Artistic/stylized interpretation - not photorealistic
 - No text or letters in the image

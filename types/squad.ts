@@ -69,6 +69,7 @@ export interface SquadWithMembers extends Squad {
   captain: Pick<User, 'id' | 'ethosProfileId' | 'ethosDisplayName' | 'ethosUsername' | 'ethosAvatarUrl'>;
   _count?: {
     members: number;
+    openPositions?: number;
   };
 }
 
