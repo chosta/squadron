@@ -114,17 +114,40 @@ export class SquadService {
   }
 
   /**
-   * List all active squads with pagination
+   * List all active squads with pagination and optional search
    */
   async listSquads(params: {
     page?: number;
     limit?: number;
     activeOnly?: boolean;
+    search?: string;
   }): Promise<{ squads: SquadWithMembers[]; total: number }> {
-    const { page = 1, limit = 20, activeOnly = false } = params;
+    const { page = 1, limit = 20, activeOnly = false, search } = params;
     const skip = (page - 1) * limit;
 
-    const where: Prisma.SquadWhereInput = activeOnly ? { isActive: true } : {};
+    const where: Prisma.SquadWhereInput = {
+      ...(activeOnly ? { isActive: true } : {}),
+      ...(search
+        ? {
+            OR: [
+              { name: { contains: search, mode: 'insensitive' } },
+              {
+                members: {
+                  some: {
+                    user: {
+                      OR: [
+                        { ethosDisplayName: { contains: search, mode: 'insensitive' } },
+                        { ethosUsername: { contains: search, mode: 'insensitive' } },
+                        { ethosXHandle: { contains: search, mode: 'insensitive' } },
+                      ],
+                    },
+                  },
+                },
+              },
+            ],
+          }
+        : {}),
+    };
 
     const [squads, total] = await Promise.all([
       prisma.squad.findMany({

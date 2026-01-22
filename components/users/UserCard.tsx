@@ -1,17 +1,38 @@
+'use client';
+
 import Link from 'next/link';
 import type { User } from '@/types';
 import type { SquadRole } from '@/types/squad';
 import { SQUAD_ROLES } from '@/types/squad';
+import { UserAvatarWithValidator } from './UserAvatarWithValidator';
 
 interface UserCardProps {
   user: Pick<User, 'id' | 'ethosDisplayName' | 'ethosUsername' | 'ethosAvatarUrl' | 'ethosScore'> & {
     primarySquadRole?: SquadRole | null;
+    ethosXId?: string | null;
+    ethosProfileId?: number | null;
     _count?: { squadMemberships: number };
   };
   squadMemberships?: { role: SquadRole }[];
 }
 
 const MAX_DISPLAYED_ROLES = 3;
+
+function XIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
+function EthosIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
+  );
+}
 
 export function UserCard({ user, squadMemberships }: UserCardProps) {
   const displayName = user.ethosDisplayName || user.ethosUsername || 'Unknown';
@@ -30,25 +51,48 @@ export function UserCard({ user, squadMemberships }: UserCardProps) {
   return (
     <Link
       href={`/users/${user.id}`}
-      className="block bg-white rounded-xl border border-gray-200 shadow-sm p-6 hover:shadow-md transition-shadow"
+      className="block bg-space-800 rounded-xl border border-space-600 shadow-sm p-6 hover:shadow-md hover:border-space-500 transition-all"
     >
       <div className="flex flex-col items-center text-center">
-        {user.ethosAvatarUrl ? (
-          <img
-            src={user.ethosAvatarUrl}
-            alt={displayName}
-            className="w-20 h-20 rounded-full object-cover"
-          />
-        ) : (
-          <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
-            <span className="text-2xl text-gray-600 font-semibold">
-              {displayName.charAt(0).toUpperCase()}
-            </span>
-          </div>
-        )}
-        <h3 className="mt-4 text-lg font-semibold text-gray-900 truncate max-w-full">
-          {displayName}
-        </h3>
+        <UserAvatarWithValidator
+          src={user.ethosAvatarUrl}
+          name={displayName}
+          size="xl"
+          ethosProfileId={user.ethosProfileId}
+        />
+        <div className="mt-4 flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-hull-100 truncate">
+            {displayName}
+          </h3>
+          {(user.ethosXId || user.ethosUsername) && (
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              {user.ethosXId && (
+                <a
+                  href={`https://x.com/i/user/${user.ethosXId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-hull-400 hover:text-hull-100 transition-colors"
+                  title="X Profile"
+                >
+                  <XIcon className="w-4 h-4" />
+                </a>
+              )}
+              {user.ethosUsername && (
+                <a
+                  href={`https://app.ethos.network/profile/x/${user.ethosUsername}/`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="text-hull-400 hover:text-hull-100 transition-colors"
+                  title="Ethos Profile"
+                >
+                  <EthosIcon className="w-4 h-4" />
+                </a>
+              )}
+            </div>
+          )}
+        </div>
 
         {displayedRoles.length > 0 && (
           <div className="mt-2 flex flex-wrap justify-center gap-1">
@@ -57,7 +101,7 @@ export function UserCard({ user, squadMemberships }: UserCardProps) {
               return (
                 <span
                   key={role}
-                  className="inline-flex items-center gap-1 bg-gray-100 text-gray-800 rounded-full font-medium text-xs px-2 py-0.5"
+                  className="inline-flex items-center gap-1 bg-space-700 text-hull-300 rounded-full font-medium text-xs px-2 py-0.5"
                   title={config.description}
                 >
                   <span>{config.emoji}</span>
@@ -66,14 +110,14 @@ export function UserCard({ user, squadMemberships }: UserCardProps) {
               );
             })}
             {remainingCount > 0 && (
-              <span className="inline-flex items-center bg-gray-100 text-gray-500 rounded-full font-medium text-xs px-2 py-0.5">
+              <span className="inline-flex items-center bg-space-700 text-hull-400 rounded-full font-medium text-xs px-2 py-0.5">
                 +{remainingCount} more
               </span>
             )}
           </div>
         )}
 
-        <div className="mt-3 flex items-center gap-3 text-sm text-gray-500">
+        <div className="mt-3 flex items-center gap-3 text-sm text-hull-400">
           {user.ethosScore !== null && (
             <div className="flex items-center gap-1">
               <svg className="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
@@ -91,6 +135,7 @@ export function UserCard({ user, squadMemberships }: UserCardProps) {
             </div>
           )}
         </div>
+
       </div>
     </Link>
   );

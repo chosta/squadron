@@ -6,6 +6,7 @@ import { SQUAD_ROLES } from '@/types/squad';
 
 interface RoleFilterProps {
   selectedRole: SquadRole | null;
+  searchQuery?: string;
 }
 
 const ALL_ROLES: SquadRole[] = [
@@ -21,16 +22,24 @@ const ALL_ROLES: SquadRole[] = [
   'COMMUNITY_BUILDER',
 ];
 
-export function RoleFilter({ selectedRole }: RoleFilterProps) {
+export function RoleFilter({ selectedRole, searchQuery }: RoleFilterProps) {
+  const buildUrl = (role: SquadRole | null) => {
+    const params = new URLSearchParams();
+    if (role) params.set('role', role);
+    if (searchQuery) params.set('search', searchQuery);
+    const queryString = params.toString();
+    return queryString ? `/users?${queryString}` : '/users';
+  };
+
   return (
     <div className="mb-6">
       <div className="flex flex-wrap gap-2">
         <Link
-          href="/users"
+          href={buildUrl(null)}
           className={`inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
             selectedRole === null
-              ? 'bg-gray-900 text-white'
-              : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+              ? 'bg-primary-500 text-white'
+              : 'bg-space-800 text-hull-300 border border-space-600 hover:bg-space-700'
           }`}
         >
           All
@@ -41,11 +50,11 @@ export function RoleFilter({ selectedRole }: RoleFilterProps) {
           return (
             <Link
               key={role}
-              href={`/users?role=${role}`}
+              href={buildUrl(role)}
               className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium transition-colors ${
                 isSelected
-                  ? 'bg-gray-900 text-white'
-                  : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                  ? 'bg-primary-500 text-white'
+                  : 'bg-space-800 text-hull-300 border border-space-600 hover:bg-space-700'
               }`}
               title={config.description}
             >

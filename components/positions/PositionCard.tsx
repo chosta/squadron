@@ -26,7 +26,7 @@ export function PositionCard({
   const daysUntilExpiry = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 hover:shadow-md transition-shadow">
+    <div className="bg-space-800 rounded-xl border border-space-600 p-6 hover:border-space-500 transition-colors">
       <div className="flex items-start gap-4">
         <div className="flex-shrink-0">
           {position.squad.avatarUrl ? (
@@ -36,8 +36,8 @@ export function PositionCard({
               className="w-14 h-14 rounded-lg object-cover"
             />
           ) : (
-            <div className="w-14 h-14 rounded-lg bg-primary-100 flex items-center justify-center">
-              <span className="text-2xl text-primary-600">
+            <div className="w-14 h-14 rounded-lg bg-space-700 flex items-center justify-center">
+              <span className="text-2xl text-hull-300">
                 {position.squad.name.charAt(0).toUpperCase()}
               </span>
             </div>
@@ -47,17 +47,17 @@ export function PositionCard({
           <div className="flex items-center gap-2 flex-wrap">
             <Link
               href={`/squads/${position.squad.id}`}
-              className="text-lg font-semibold text-gray-900 hover:text-primary-600 truncate"
+              className="text-lg font-semibold text-hull-100 hover:text-primary-400 truncate"
             >
               {position.squad.name}
             </Link>
             <SquadRoleBadge role={position.role} size="sm" />
           </div>
-          <p className="text-sm text-gray-500 mt-1">
+          <p className="text-sm text-hull-400 mt-1">
             {memberCount} member{memberCount !== 1 ? 's' : ''}
           </p>
           {position.description && (
-            <p className="mt-2 text-sm text-gray-600 line-clamp-2">
+            <p className="mt-2 text-sm text-hull-400 line-clamp-2">
               {position.description}
             </p>
           )}
@@ -69,7 +69,7 @@ export function PositionCard({
               compact
             />
           </div>
-          <p className="mt-2 text-xs text-gray-400">
+          <p className="mt-2 text-xs text-hull-500">
             {daysUntilExpiry > 0
               ? `Expires in ${daysUntilExpiry} day${daysUntilExpiry === 1 ? '' : 's'}`
               : 'Expires today'}
@@ -84,7 +84,7 @@ export function PositionCard({
             className={`w-full px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
               isEligible
                 ? 'text-white bg-primary-600 hover:bg-primary-700'
-                : 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                : 'text-hull-500 bg-space-700 cursor-not-allowed'
             }`}
           >
             {isEligible ? 'Apply' : 'Not Eligible'}

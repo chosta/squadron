@@ -51,12 +51,12 @@ export function BenefitsFilterSelect({ value, onChange, disabled = false }: Bene
         type="button"
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
-        className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-left text-gray-900 focus:border-primary-500 focus:ring-primary-500 disabled:bg-gray-100 disabled:cursor-not-allowed"
+        className="block w-full rounded-lg border border-space-600 bg-space-800 px-3 py-2 text-left text-hull-100 text-sm focus:border-primary-500 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
       >
         <span className="flex items-center justify-between">
           <span>{displayText}</span>
           <svg
-            className={`w-4 h-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+            className={`w-4 h-4 text-hull-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -67,7 +67,7 @@ export function BenefitsFilterSelect({ value, onChange, disabled = false }: Bene
       </button>
 
       {isOpen && (
-        <div className="absolute z-10 mt-1 w-full rounded-lg border border-gray-200 bg-white shadow-lg">
+        <div className="absolute z-10 mt-1 w-full rounded-lg border border-space-600 bg-space-800 shadow-lg">
           <div className="p-2 space-y-1">
             {benefits.map(([key, config]) => {
               const isSelected = value.includes(key);
@@ -75,17 +75,17 @@ export function BenefitsFilterSelect({ value, onChange, disabled = false }: Bene
                 <label
                   key={key}
                   className={`flex items-center gap-2 px-3 py-2 rounded-md cursor-pointer transition-colors ${
-                    isSelected ? 'bg-emerald-50' : 'hover:bg-gray-50'
+                    isSelected ? 'bg-primary-500/20' : 'hover:bg-space-700'
                   }`}
                 >
                   <input
                     type="checkbox"
                     checked={isSelected}
                     onChange={() => handleToggle(key)}
-                    className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-primary-500 focus:ring-primary-500 border-space-600 bg-space-700 rounded"
                   />
                   <span>{config.emoji}</span>
-                  <span className={`text-sm ${isSelected ? 'text-emerald-700 font-medium' : 'text-gray-700'}`}>
+                  <span className={`text-sm ${isSelected ? 'text-primary-400 font-medium' : 'text-hull-300'}`}>
                     {config.label}
                   </span>
                 </label>
@@ -93,11 +93,11 @@ export function BenefitsFilterSelect({ value, onChange, disabled = false }: Bene
             })}
           </div>
           {value.length > 0 && (
-            <div className="border-t border-gray-200 p-2">
+            <div className="border-t border-space-600 p-2">
               <button
                 type="button"
                 onClick={handleClear}
-                className="w-full px-3 py-1.5 text-sm text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
+                className="w-full px-3 py-1.5 text-sm text-hull-400 hover:text-hull-100 hover:bg-space-700 rounded-md transition-colors"
               >
                 Clear all
               </button>

@@ -33,8 +33,8 @@ export function UserAvatar({ src, name, size = 'md', className = '', isValidator
       className={`${classes} rounded-full object-cover`}
     />
   ) : (
-    <div className={`${classes} rounded-full bg-gray-200 flex items-center justify-center`}>
-      <span className="text-gray-600 font-semibold">{initial}</span>
+    <div className={`${classes} rounded-full bg-space-700 flex items-center justify-center`}>
+      <span className="text-hull-400 font-semibold">{initial}</span>
     </div>
   );
 
