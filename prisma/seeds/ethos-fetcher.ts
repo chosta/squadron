@@ -211,10 +211,14 @@ export const ROLE_SEARCH_CONFIG: Record<SquadRole, {
 
 /**
  * Fetch users for a specific role
+ * @param role - The squad role to search for
+ * @param count - Number of users to fetch (default: 10)
+ * @param excludeProfileIds - Optional set of profile IDs to exclude (for avoiding duplicates)
  */
 export async function fetchUsersForRole(
   role: SquadRole,
-  count: number = 10
+  count: number = 10,
+  excludeProfileIds?: Set<number>
 ): Promise<EthosUser[]> {
   const config = ROLE_SEARCH_CONFIG[role];
   const results: EthosUser[] = [];
@@ -232,8 +236,13 @@ export async function fetchUsersForRole(
     for (const user of users) {
       if (results.length >= count) break;
 
-      // Skip if already seen
+      // Skip if already seen in this session
       if (seenProfileIds.has(user.profileId)) {
+        continue;
+      }
+
+      // Skip if in the exclude list (e.g., already in database)
+      if (excludeProfileIds?.has(user.profileId)) {
         continue;
       }
 

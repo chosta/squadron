@@ -74,6 +74,32 @@ squadron/
 - **API**: RESTful endpoints at `/api/users`
 - **Database**: PostgreSQL with Prisma ORM
 - **Authentication**: Privy (Web3) + Ethos Network integration
+- **Squads**: Team management with roles, invites, and positions
+
+## Seeding Data
+
+Use the `/seed` skill to create squads and users via natural language:
+
+```bash
+# Create a squad with members
+/seed create squad "Alpha Hunters" with: @vitalikbuterin as DEV, @caborethos as KOL
+
+# Natural language format
+/seed add a full squad of 5 users: Clemente, Easy, ICOBeast called SlumDoggos
+The description: they want to launch a token called $SLUM
+
+# Add user to existing squad
+/seed add user @newmember to squad SlumDoggos as TRADER
+```
+
+**User resolution order:**
+1. Database lookup (ethosUsername, ethosDisplayName, ethosXHandle)
+2. Ethos API lookup (by X handle)
+3. Interactive prompt for unresolved users
+
+**Squad images:** If `GEMINI_API_KEY` is configured, squad avatars are auto-generated.
+
+See `.claude/skills/seed/SKILL.md` for full documentation.
 
 ## Environment Variables
 
@@ -113,6 +139,11 @@ squadron/
 ### Ethos Network
 
 - `ETHOS_CLIENT_ID` - Client identifier for Ethos API
+
+### Gemini AI (Optional)
+
+- `GEMINI_API_KEY` - For generating squad avatar images via Imagen 3
+- Get a key at: https://makersuite.google.com/app/apikey
 
 ## Development Guidelines
 
