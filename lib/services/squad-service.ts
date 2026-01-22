@@ -405,6 +405,33 @@ export class SquadService {
   }
 
   /**
+   * Get unread chat message counts for all squads a user is in
+   */
+  async getUnreadChatCounts(userId: string): Promise<Record<string, number>> {
+    const memberships = await prisma.squadMember.findMany({
+      where: { userId },
+      select: { squadId: true, lastReadAt: true },
+    });
+
+    const counts: Record<string, number> = {};
+
+    for (const membership of memberships) {
+      const count = await prisma.chatMessage.count({
+        where: {
+          squadId: membership.squadId,
+          createdAt: { gt: membership.lastReadAt ?? new Date(0) },
+          senderId: { not: userId },
+        },
+      });
+      if (count > 0) {
+        counts[membership.squadId] = count;
+      }
+    }
+
+    return counts;
+  }
+
+  /**
    * Add member directly to squad (used by invite service)
    */
   async addMember(squadId: string, userId: string, role: SquadRole): Promise<SquadMember> {

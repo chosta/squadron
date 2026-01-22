@@ -1,10 +1,13 @@
 import { getSession } from '@/lib/auth/session';
 import { squadService } from '@/lib/services/squad-service';
 import { inviteService } from '@/lib/services/invite-service';
+import { positionService } from '@/lib/services/position-service';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
 import { Card, CardContent } from '@/components/ui/Card';
 import { PublicNavbar } from '@/components/navigation';
+import { OverlappingAvatars } from '@/components/users/OverlappingAvatars';
+import { SquadRoleBadge } from '@/components/squads/SquadRoleBadge';
 
 export default async function DashboardPage() {
   const session = await getSession();
@@ -12,27 +15,24 @@ export default async function DashboardPage() {
     redirect('/login');
   }
 
-  const [squads, invites, eligibility] = await Promise.all([
+  const [squads, invites, eligibility, userApplications, unreadCounts, applicationCounts] = await Promise.all([
     squadService.getUserSquads(session.userId),
     inviteService.getUserPendingInvites(session.userId),
     squadService.canUserCreateSquad(session.userId),
+    positionService.getUserApplications(session.userId),
+    squadService.getUnreadChatCounts(session.userId),
+    positionService.getCaptainApplicationCounts(session.userId),
   ]);
 
-  const activeSquads = squads.filter((s) => s.isActive);
+  const fullSquads = squads.filter((s) => s.members.length >= s.maxSize);
   const captainedSquads = squads.filter((s) => s.captainId === session.userId);
+  const pendingApplications = userApplications.filter((a) => a.status === 'PENDING');
 
   return (
     <div className="min-h-screen bg-space-900">
       <PublicNavbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="space-y-8">
-          <div>
-            <h1 className="text-2xl font-bold text-hull-100">Dashboard</h1>
-        <p className="mt-1 text-hull-400">
-          Welcome back! Here&apos;s an overview of your squads.
-        </p>
-      </div>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardContent>
@@ -59,8 +59,8 @@ export default async function DashboardPage() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm text-hull-400">Active Squads</p>
-                <p className="text-2xl font-bold text-hull-100">{activeSquads.length}</p>
+                <p className="text-sm text-hull-400">Full Squads</p>
+                <p className="text-2xl font-bold text-hull-100">{fullSquads.length}</p>
               </div>
             </div>
           </CardContent>
@@ -124,39 +124,71 @@ export default async function DashboardPage() {
             </Card>
           ) : (
             <div className="space-y-3">
-              {squads.slice(0, 3).map((squad) => (
-                <Card key={squad.id} padding="sm">
-                  <Link
-                    href={`/dashboard/squads/${squad.id}`}
-                    className="flex items-center gap-3 p-2 hover:bg-space-700 rounded-lg"
-                  >
-                    {squad.avatarUrl ? (
-                      <img
-                        src={squad.avatarUrl}
-                        alt={squad.name}
-                        className="w-10 h-10 rounded-lg object-cover"
-                      />
-                    ) : (
-                      <div className="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center">
-                        <span className="text-primary-400 font-semibold">
-                          {squad.name.charAt(0).toUpperCase()}
-                        </span>
+              {squads.slice(0, 3).map((squad) => {
+                const isCaptain = squad.captainId === session.userId;
+                const unreadCount = unreadCounts[squad.id] || 0;
+                const appCount = applicationCounts[squad.id] || 0;
+                const memberAvatars = squad.members.map((m) => ({
+                  id: m.id,
+                  src: m.user.ethosAvatarUrl,
+                  name: m.user.ethosDisplayName || m.user.ethosUsername,
+                  isCaptain: m.userId === squad.captainId,
+                }));
+
+                return (
+                  <Card key={squad.id} padding="sm">
+                    <Link
+                      href={`/dashboard/squads/${squad.id}`}
+                      className="flex items-center gap-4 p-2 hover:bg-space-700 rounded-lg"
+                    >
+                      {squad.avatarUrl ? (
+                        <img
+                          src={squad.avatarUrl}
+                          alt={squad.name}
+                          className="w-14 h-14 rounded-lg object-cover"
+                        />
+                      ) : (
+                        <div className="w-14 h-14 rounded-lg bg-primary-500/20 flex items-center justify-center">
+                          <span className="text-primary-400 text-xl font-semibold">
+                            {squad.name.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-hull-100 truncate">{squad.name}</p>
+                          {isCaptain && (
+                            <span className="px-2 py-0.5 text-xs font-medium bg-yellow-500/20 text-yellow-400 rounded-full">
+                              Captain
+                            </span>
+                          )}
+                        </div>
+                        <div className="mt-1">
+                          <OverlappingAvatars avatars={memberAvatars} maxDisplay={5} size="sm" />
+                        </div>
                       </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-hull-100 truncate">{squad.name}</p>
-                      <p className="text-sm text-hull-400">
-                        {squad._count?.members ?? squad.members.length} members
-                      </p>
-                    </div>
-                    {squad.captainId === session.userId && (
-                      <span className="px-2 py-0.5 text-xs font-medium bg-yellow-500/20 text-yellow-400 rounded-full">
-                        Captain
-                      </span>
-                    )}
-                  </Link>
-                </Card>
-              ))}
+                      <div className="flex flex-col items-end gap-1">
+                        {unreadCount > 0 && (
+                          <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-primary-500/20 text-primary-400 rounded-full">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                            </svg>
+                            {unreadCount}
+                          </span>
+                        )}
+                        {isCaptain && appCount > 0 && (
+                          <span className="flex items-center gap-1 px-2 py-0.5 text-xs font-medium bg-blue-500/20 text-blue-400 rounded-full">
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            {appCount}
+                          </span>
+                        )}
+                      </div>
+                    </Link>
+                  </Card>
+                );
+              })}
             </div>
           )}
         </div>
@@ -215,6 +247,64 @@ export default async function DashboardPage() {
             </div>
           )}
         </div>
+      </div>
+
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-hull-100">My Applications</h2>
+          {pendingApplications.length > 0 && (
+            <Link
+              href="/dashboard/applications"
+              className="text-sm text-primary-400 hover:text-primary-300"
+            >
+              View all
+            </Link>
+          )}
+        </div>
+        {pendingApplications.length === 0 ? (
+          <Card>
+            <CardContent className="text-center py-8">
+              <p className="text-hull-400">No pending applications.</p>
+              <Link
+                href="/positions"
+                className="mt-2 inline-block text-primary-400 hover:text-primary-300 font-medium"
+              >
+                Browse open positions
+              </Link>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-3">
+            {pendingApplications.slice(0, 3).map((application) => (
+              <Card key={application.id} padding="sm">
+                <div className="flex items-center gap-3 p-2">
+                  {application.position.squad.avatarUrl ? (
+                    <img
+                      src={application.position.squad.avatarUrl}
+                      alt={application.position.squad.name}
+                      className="w-10 h-10 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center">
+                      <span className="text-primary-400 font-semibold">
+                        {application.position.squad.name.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-hull-100 truncate">{application.position.squad.name}</p>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <SquadRoleBadge role={application.position.role} size="sm" />
+                    </div>
+                  </div>
+                  <span className="px-2 py-0.5 text-xs font-medium bg-yellow-500/20 text-yellow-400 rounded-full">
+                    Pending
+                  </span>
+                </div>
+              </Card>
+            ))}
+          </div>
+        )}
       </div>
 
       <Card>

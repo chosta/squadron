@@ -186,6 +186,7 @@ model SquadMember {
   userId    String
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   role      SquadRole
+  lastReadAt DateTime? // Track when user last read squad chat
 
   @@unique([squadId, userId])
   @@index([squadId])

@@ -22,12 +22,7 @@ export function DashboardNav() {
 
   return (
     <nav className="w-64 bg-space-800 border-r border-space-600 min-h-screen">
-      <div className="p-6">
-        <Link href="/" className="text-xl font-bold text-hull-100">
-          Squadron
-        </Link>
-      </div>
-      <ul className="space-y-1 px-3">
+      <ul className="space-y-1 px-3 pt-6">
         {navItems.map((item) => (
           <li key={item.href}>
             <Link
@@ -56,27 +51,6 @@ export function DashboardNav() {
           </li>
         ))}
       </ul>
-      <div className="mt-8 px-3">
-        <Link
-          href="/dashboard/squads/create"
-          className="flex items-center justify-center gap-2 w-full px-4 py-2 bg-primary-600 text-white rounded-lg text-sm font-medium hover:bg-primary-700 transition-colors"
-        >
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-            />
-          </svg>
-          Create Squad
-        </Link>
-      </div>
     </nav>
   );
 }

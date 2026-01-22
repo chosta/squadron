@@ -557,6 +557,35 @@ export class PositionService {
     return applications as unknown as ApplicationWithPosition[];
   }
 
+  /**
+   * Get pending application counts for squads where user is captain
+   */
+  async getCaptainApplicationCounts(userId: string): Promise<Record<string, number>> {
+    const squads = await prisma.squad.findMany({
+      where: { captainId: userId },
+      select: { id: true },
+    });
+
+    const counts: Record<string, number> = {};
+
+    for (const squad of squads) {
+      const count = await prisma.application.count({
+        where: {
+          status: 'PENDING',
+          position: {
+            squadId: squad.id,
+            isOpen: true,
+          },
+        },
+      });
+      if (count > 0) {
+        counts[squad.id] = count;
+      }
+    }
+
+    return counts;
+  }
+
   // ==================== Utility Methods ====================
 
   /**
