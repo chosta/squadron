@@ -139,9 +139,9 @@ export default function HomePage() {
             {/* Features Section */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
               <Card className="p-6 flex flex-col">
-                <h3 className="text-lg font-semibold text-hull-100 mb-2">Users</h3>
+                <h3 className="text-lg font-semibold text-hull-100 mb-2">The Network</h3>
                 <p className="text-hull-400 mb-4">
-                  Browse community members, view their Ethos credibility scores, and discover potential squad mates.
+                  Scout vetted experts, view their Ethos credibility, and assemble your dream team.
                 </p>
                 {/* Overlapping User Avatars */}
                 {!statsLoading && landingStats?.users && landingStats.users.length > 0 && (
@@ -174,9 +174,9 @@ export default function HomePage() {
               </Card>
 
               <Card className="p-6 flex flex-col">
-                <h3 className="text-lg font-semibold text-hull-100 mb-2">Squads</h3>
+                <h3 className="text-lg font-semibold text-hull-100 mb-2">The Units</h3>
                 <p className="text-hull-400 mb-4">
-                  Create or join squads with role-based organization. Higher Ethos scores unlock more squad creation slots.
+                  Launch or join role-based squads. Earn a higher Ethos to lead and manage more units.
                 </p>
                 {/* Overlapping Squad Avatars */}
                 {!statsLoading && landingStats?.squads && landingStats.squads.length > 0 && (
@@ -216,9 +216,9 @@ export default function HomePage() {
               </Card>
 
               <Card className="p-6 flex flex-col">
-                <h3 className="text-lg font-semibold text-hull-100 mb-2">Open Positions</h3>
+                <h3 className="text-lg font-semibold text-hull-100 mb-2">The Missions</h3>
                 <p className="text-hull-400 mb-4">
-                  Find your role in an active squad. Browse open positions that match your skills and Ethos credibility tier.
+                  Find your next role. Browse squad openings that align with your rank and specialized skills.
                 </p>
                 {/* Position Count */}
                 {!statsLoading && landingStats && (
