@@ -18,6 +18,7 @@ export function PublicNavbar() {
           <nav className="flex items-center gap-6">
             <NavLink href="/users">Users</NavLink>
             <NavLink href="/squads">Squads</NavLink>
+            <NavLink href="/squads/positions">Positions</NavLink>
             {isAuthenticated && (
               <NavLink href="/dashboard">Dashboard</NavLink>
             )}
