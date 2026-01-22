@@ -4,6 +4,7 @@ export const dynamic = 'force-dynamic';
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { AuthButtons } from '@/components/auth/AuthButtons';
 import { Card } from '@/components/ui/Card';
@@ -26,12 +27,20 @@ interface LandingStats {
 }
 
 export default function HomePage() {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
   const [landingStats, setLandingStats] = useState<LandingStats | null>(null);
   const [statsLoading, setStatsLoading] = useState(true);
 
+  // Redirect authenticated users to dashboard
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (isAuthenticated) {
+      router.push('/dashboard');
+    }
+  }, [isAuthenticated, router]);
+
+  useEffect(() => {
+    if (!isAuthenticated && !isLoading) {
       fetch('/api/landing-stats')
         .then((res) => res.json())
         .then((data) => {
@@ -40,89 +49,27 @@ export default function HomePage() {
         })
         .catch(() => setStatsLoading(false));
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, isLoading]);
 
+  // Show loading while checking auth or redirecting
+  if (isLoading || isAuthenticated) {
+    return (
+      <div className="min-h-screen bg-space-900 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
+          <p className="text-hull-400">{isAuthenticated ? 'Redirecting...' : 'Loading...'}</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Public landing page for unauthenticated users
   return (
     <div className="min-h-screen bg-space-900">
       <PublicNavbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        {isLoading ? (
-          <div className="flex justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-500" />
-          </div>
-        ) : isAuthenticated && user ? (
-          <div className="space-y-8">
-            {/* Welcome Section */}
-            <Card className="p-6">
-              <div className="flex items-center gap-4">
-                {user.ethosData.avatarUrl ? (
-                  <img
-                    src={user.ethosData.avatarUrl}
-                    alt={user.ethosData.displayName || 'User'}
-                    className="w-16 h-16 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-16 h-16 rounded-full bg-primary-500/20 flex items-center justify-center">
-                    <span className="text-2xl font-bold text-primary-400">
-                      {(user.ethosData.displayName || user.ethosData.username || 'U')[0].toUpperCase()}
-                    </span>
-                  </div>
-                )}
-                <div>
-                  <h1 className="text-2xl font-bold text-hull-100">
-                    Welcome, {user.customDisplayName || user.ethosData.displayName || user.ethosData.username}!
-                  </h1>
-                  <p className="text-hull-400">
-                    Credibility Score: <span className="font-semibold">{user.ethosData.score ?? 'N/A'}</span>
-                  </p>
-                </div>
-              </div>
-            </Card>
-
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="p-6">
-                <h3 className="text-sm font-medium text-hull-400">Total XP</h3>
-                <p className="mt-2 text-3xl font-bold text-hull-100">
-                  {user.ethosData.xpTotal?.toLocaleString() || '0'}
-                </p>
-              </Card>
-              <Card className="p-6">
-                <h3 className="text-sm font-medium text-hull-400">Streak Days</h3>
-                <p className="mt-2 text-3xl font-bold text-hull-100">
-                  {user.ethosData.xpStreakDays || '0'}
-                </p>
-              </Card>
-              <Card className="p-6">
-                <h3 className="text-sm font-medium text-hull-400">Influence Percentile</h3>
-                <p className="mt-2 text-3xl font-bold text-hull-100">
-                  {user.ethosData.influencePercentile ? `${user.ethosData.influencePercentile.toFixed(1)}%` : 'N/A'}
-                </p>
-              </Card>
-            </div>
-
-            {/* Quick Actions */}
-            <Card className="p-6">
-              <h2 className="text-lg font-semibold text-hull-100 mb-4">Quick Actions</h2>
-              <div className="flex flex-wrap gap-4">
-                <Link
-                  href="/profile"
-                  className="inline-flex items-center px-4 py-2 bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
-                >
-                  View Full Profile
-                </Link>
-                <Link
-                  href="/admin"
-                  className="inline-flex items-center px-4 py-2 bg-space-700 hover:bg-space-600 text-hull-300 rounded-lg transition-colors"
-                >
-                  Admin Panel
-                </Link>
-              </div>
-            </Card>
-          </div>
-        ) : (
-          <div className="space-y-16">
+        <div className="space-y-16">
             {/* Hero Section */}
             <div className="text-center py-12">
               <p className="text-2xl sm:text-3xl italic text-hull-300 mb-8 max-w-3xl mx-auto">
@@ -240,8 +187,7 @@ export default function HomePage() {
               </Card>
             </div>
 
-          </div>
-        )}
+        </div>
       </main>
     </div>
   );

@@ -2,21 +2,26 @@
 
 export const dynamic = 'force-dynamic';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { SignInButton } from '@/components/auth/SignInButton';
 import { NoEthosProfile } from '@/components/auth/NoEthosProfile';
 
-export default function LoginPage() {
+function LoginPageContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { isAuthenticated, isLoading, requiresEthosProfile } = useAuth();
 
   useEffect(() => {
     if (isAuthenticated && !requiresEthosProfile) {
-      router.push('/');
+      // Get redirect param, default to /dashboard
+      const redirectTo = searchParams.get('redirect');
+      // Validate: must start with / to prevent open redirects
+      const safeRedirect = redirectTo?.startsWith('/') ? redirectTo : '/dashboard';
+      router.push(safeRedirect);
     }
-  }, [isAuthenticated, requiresEthosProfile, router]);
+  }, [isAuthenticated, requiresEthosProfile, router, searchParams]);
 
   // Show NoEthosProfile if needed
   if (requiresEthosProfile) {
@@ -116,5 +121,22 @@ function CheckIcon({ className }: { className?: string }) {
         d="M5 13l4 4L19 7"
       />
     </svg>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600" />
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <LoginPageContent />
+    </Suspense>
   );
 }

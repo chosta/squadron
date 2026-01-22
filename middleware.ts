@@ -11,11 +11,11 @@ const protectedRoutes = [
 ];
 
 /**
- * Public routes - handled by client-side auth
- * Note: We don't redirect authenticated users from /login here because
- * the client needs to check Ethos profile status first (NoEthosProfile screen)
+ * Auth routes - redirect authenticated users away from these
+ * Note: We redirect from /login here, but the client also handles
+ * Ethos profile checks (NoEthosProfile screen) after middleware
  */
-const authRoutes: string[] = [];
+const authRoutes: string[] = ['/login'];
 
 /**
  * Check if a path matches any of the given route prefixes
@@ -44,7 +44,12 @@ export function middleware(request: NextRequest) {
 
   // Redirect authenticated users away from auth pages
   if (isAuthenticated && matchesRoute(pathname, authRoutes)) {
-    return NextResponse.redirect(new URL('/', request.url));
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+
+  // Redirect authenticated users from home (/) to dashboard
+  if (isAuthenticated && pathname === '/') {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
   // Redirect unauthenticated users from protected routes to login
