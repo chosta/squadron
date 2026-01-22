@@ -134,7 +134,7 @@ export async function POST(
     const updatedSquad = await squadService.getSquad(squadId);
     const remainingAttempts = MAX_AVATAR_REGENERATIONS - (squad.avatarRegenerationCount + 1);
 
-    return NextResponse.json({ success: true, data: updatedSquad, remainingAttempts });
+    return NextResponse.json({ success: true, data: updatedSquad ?? undefined, remainingAttempts });
   } catch (error) {
     console.error('Error generating squad avatar:', error);
     const message = error instanceof Error ? error.message : 'Failed to generate avatar';
