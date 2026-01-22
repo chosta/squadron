@@ -22,13 +22,13 @@ export default async function DashboardPage() {
   const captainedSquads = squads.filter((s) => s.captainId === session.userId);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-space-900">
       <PublicNavbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="space-y-8">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-1 text-gray-600">
+            <h1 className="text-2xl font-bold text-hull-100">Dashboard</h1>
+        <p className="mt-1 text-hull-400">
           Welcome back! Here&apos;s an overview of your squads.
         </p>
       </div>
@@ -37,14 +37,14 @@ export default async function DashboardPage() {
         <Card>
           <CardContent>
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-primary-100 rounded-lg">
-                <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-3 bg-primary-500/20 rounded-lg">
+                <svg className="w-6 h-6 text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
               </div>
               <div>
-                <p className="text-sm text-gray-500">My Squads</p>
-                <p className="text-2xl font-bold text-gray-900">{squads.length}</p>
+                <p className="text-sm text-hull-400">My Squads</p>
+                <p className="text-2xl font-bold text-hull-100">{squads.length}</p>
               </div>
             </div>
           </CardContent>
@@ -53,14 +53,14 @@ export default async function DashboardPage() {
         <Card>
           <CardContent>
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-green-100 rounded-lg">
-                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-3 bg-green-500/20 rounded-lg">
+                <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Active Squads</p>
-                <p className="text-2xl font-bold text-gray-900">{activeSquads.length}</p>
+                <p className="text-sm text-hull-400">Active Squads</p>
+                <p className="text-2xl font-bold text-hull-100">{activeSquads.length}</p>
               </div>
             </div>
           </CardContent>
@@ -69,14 +69,14 @@ export default async function DashboardPage() {
         <Card>
           <CardContent>
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-yellow-100 rounded-lg">
-                <svg className="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-3 bg-yellow-500/20 rounded-lg">
+                <svg className="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
               </div>
               <div>
-                <p className="text-sm text-gray-500">As Captain</p>
-                <p className="text-2xl font-bold text-gray-900">{captainedSquads.length}</p>
+                <p className="text-sm text-hull-400">As Captain</p>
+                <p className="text-2xl font-bold text-hull-100">{captainedSquads.length}</p>
               </div>
             </div>
           </CardContent>
@@ -85,14 +85,14 @@ export default async function DashboardPage() {
         <Card>
           <CardContent>
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-blue-100 rounded-lg">
-                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="p-3 bg-blue-500/20 rounded-lg">
+                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
               <div>
-                <p className="text-sm text-gray-500">Pending Invites</p>
-                <p className="text-2xl font-bold text-gray-900">{invites.length}</p>
+                <p className="text-sm text-hull-400">Pending Invites</p>
+                <p className="text-2xl font-bold text-hull-100">{invites.length}</p>
               </div>
             </div>
           </CardContent>
@@ -102,10 +102,10 @@ export default async function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Squads</h2>
+            <h2 className="text-lg font-semibold text-hull-100">Recent Squads</h2>
             <Link
               href="/dashboard/squads"
-              className="text-sm text-primary-600 hover:text-primary-700"
+              className="text-sm text-primary-400 hover:text-primary-300"
             >
               View all
             </Link>
@@ -113,10 +113,10 @@ export default async function DashboardPage() {
           {squads.length === 0 ? (
             <Card>
               <CardContent className="text-center py-8">
-                <p className="text-gray-500">You&apos;re not in any squads yet.</p>
+                <p className="text-hull-400">You&apos;re not in any squads yet.</p>
                 <Link
                   href="/dashboard/squads/create"
-                  className="mt-2 inline-block text-primary-600 hover:text-primary-700 font-medium"
+                  className="mt-2 inline-block text-primary-400 hover:text-primary-300 font-medium"
                 >
                   Create your first squad
                 </Link>
@@ -128,7 +128,7 @@ export default async function DashboardPage() {
                 <Card key={squad.id} padding="sm">
                   <Link
                     href={`/dashboard/squads/${squad.id}`}
-                    className="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg"
+                    className="flex items-center gap-3 p-2 hover:bg-space-700 rounded-lg"
                   >
                     {squad.avatarUrl ? (
                       <img
@@ -137,20 +137,20 @@ export default async function DashboardPage() {
                         className="w-10 h-10 rounded-lg object-cover"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center">
-                        <span className="text-primary-600 font-semibold">
+                      <div className="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center">
+                        <span className="text-primary-400 font-semibold">
                           {squad.name.charAt(0).toUpperCase()}
                         </span>
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900 truncate">{squad.name}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-hull-100 truncate">{squad.name}</p>
+                      <p className="text-sm text-hull-400">
                         {squad._count?.members ?? squad.members.length} members
                       </p>
                     </div>
                     {squad.captainId === session.userId && (
-                      <span className="px-2 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">
+                      <span className="px-2 py-0.5 text-xs font-medium bg-yellow-500/20 text-yellow-400 rounded-full">
                         Captain
                       </span>
                     )}
@@ -163,11 +163,11 @@ export default async function DashboardPage() {
 
         <div>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Pending Invites</h2>
+            <h2 className="text-lg font-semibold text-hull-100">Pending Invites</h2>
             {invites.length > 0 && (
               <Link
                 href="/dashboard/invites"
-                className="text-sm text-primary-600 hover:text-primary-700"
+                className="text-sm text-primary-400 hover:text-primary-300"
               >
                 View all
               </Link>
@@ -176,7 +176,7 @@ export default async function DashboardPage() {
           {invites.length === 0 ? (
             <Card>
               <CardContent className="text-center py-8">
-                <p className="text-gray-500">No pending invites.</p>
+                <p className="text-hull-400">No pending invites.</p>
               </CardContent>
             </Card>
           ) : (
@@ -191,21 +191,21 @@ export default async function DashboardPage() {
                         className="w-10 h-10 rounded-lg object-cover"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center">
-                        <span className="text-primary-600 font-semibold">
+                      <div className="w-10 h-10 rounded-lg bg-primary-500/20 flex items-center justify-center">
+                        <span className="text-primary-400 font-semibold">
                           {invite.squad.name.charAt(0).toUpperCase()}
                         </span>
                       </div>
                     )}
                     <div className="flex-1 min-w-0">
-                      <p className="font-medium text-gray-900 truncate">{invite.squad.name}</p>
-                      <p className="text-sm text-gray-500">
+                      <p className="font-medium text-hull-100 truncate">{invite.squad.name}</p>
+                      <p className="text-sm text-hull-400">
                         From {invite.inviter.ethosDisplayName || invite.inviter.ethosUsername}
                       </p>
                     </div>
                     <Link
                       href="/dashboard/invites"
-                      className="px-3 py-1 text-sm font-medium text-primary-600 hover:text-primary-700"
+                      className="px-3 py-1 text-sm font-medium text-primary-400 hover:text-primary-300"
                     >
                       Respond
                     </Link>
@@ -221,17 +221,17 @@ export default async function DashboardPage() {
         <CardContent>
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-gray-900">Squad Creation</h3>
-              <p className="text-sm text-gray-500 mt-1">
+              <h3 className="font-semibold text-hull-100">Squad Creation</h3>
+              <p className="text-sm text-hull-400 mt-1">
                 You can create up to {eligibility.maxAllowed} squads based on your Ethos score of{' '}
                 {eligibility.ethosScore ?? 0}.
               </p>
             </div>
             <div className="text-right">
-              <p className="text-2xl font-bold text-gray-900">
+              <p className="text-2xl font-bold text-hull-100">
                 {eligibility.currentCount}/{eligibility.maxAllowed}
               </p>
-              <p className="text-sm text-gray-500">squads created</p>
+              <p className="text-sm text-hull-400">squads created</p>
             </div>
           </div>
           {eligibility.canCreate && (

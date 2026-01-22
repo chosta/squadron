@@ -1,6 +1,6 @@
 import { ButtonHTMLAttributes, forwardRef } from 'react';
 
-type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost';
+type ButtonVariant = 'primary' | 'secondary' | 'danger' | 'ghost' | 'data';
 type ButtonSize = 'sm' | 'md' | 'lg';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -10,10 +10,33 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
-  primary: 'bg-primary-600 text-white hover:bg-primary-700 focus:ring-primary-500',
-  secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500',
-  danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
-  ghost: 'bg-transparent text-gray-700 hover:bg-gray-100 focus:ring-gray-500',
+  primary: [
+    'bg-gradient-to-b from-primary-500 to-primary-600 text-white',
+    'hover:from-primary-400 hover:to-primary-500',
+    'focus-visible:shadow-glow-primary',
+  ].join(' '),
+  secondary: [
+    'bg-gradient-to-b from-space-600 to-space-700 text-hull-100',
+    'border border-space-500',
+    'hover:from-space-500 hover:to-space-600',
+    'focus-visible:shadow-glow-primary',
+  ].join(' '),
+  danger: [
+    'bg-gradient-to-b from-danger-500 to-danger-600 text-white',
+    'hover:from-danger-400 hover:to-danger-500',
+    'focus-visible:shadow-glow-danger',
+  ].join(' '),
+  ghost: [
+    'bg-transparent text-hull-300',
+    'hover:bg-space-800 hover:text-hull-100',
+    'shadow-none',
+    'focus-visible:shadow-glow-primary',
+  ].join(' '),
+  data: [
+    'bg-gradient-to-b from-data-500 to-data-600 text-white',
+    'hover:from-data-400 hover:to-data-500',
+    'focus-visible:shadow-glow-data',
+  ].join(' '),
 };
 
 const sizeStyles: Record<ButtonSize, string> = {
@@ -24,13 +47,38 @@ const sizeStyles: Record<ButtonSize, string> = {
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ variant = 'primary', size = 'md', loading, disabled, className = '', children, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-medium rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+    const baseStyles = [
+      // Layout
+      'inline-flex items-center justify-center',
+      // Typography
+      'font-medium',
+      // Border radius - tactical micro-radii
+      'rounded-tactical',
+      // Transitions
+      'transition-all duration-150 ease-out',
+      // Shadow with top-light effect
+      'shadow-btn',
+      // Hover transform
+      'hover:shadow-btn-hover hover:-translate-y-px',
+      // Active state
+      'active:scale-[0.98]',
+      // Focus
+      'focus:outline-none focus-visible:outline-none',
+      // Disabled
+      'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-btn',
+    ].join(' ');
+
+    // Top-light inset shadow via inline style for proper layering
+    const insetShadowStyle = variant !== 'ghost'
+      ? { boxShadow: 'inset 0 1px 0 0 rgb(255 255 255 / 0.1)' }
+      : {};
 
     return (
       <button
         ref={ref}
         disabled={disabled || loading}
         className={`${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
+        style={insetShadowStyle}
         {...props}
       >
         {loading && (

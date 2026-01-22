@@ -2,18 +2,185 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Design System: "Subtle Galactic Tactical" */
+
 @layer base {
-  html {
-    @apply antialiased;
+  /* CSS Custom Properties for Design Tokens */
+  :root {
+    /* Primary: Squadron Orange */
+    --color-primary-500: #f97316;
+    --color-primary-600: #ea580c;
+    --color-primary-700: #c2410c;
+
+    /* Secondary: Deep Space */
+    --color-space-800: #1e293b;
+    --color-space-900: #0f172a;
+    --color-space-950: #020617;
+
+    /* Accent: Data Cyan */
+    --color-data-400: #22d3ee;
+    --color-data-500: #06b6d4;
+
+    /* Success: Tactical Green */
+    --color-tactical-400: #4ade80;
+    --color-tactical-500: #22c55e;
+
+    /* Danger */
+    --color-danger-500: #ef4444;
+    --color-danger-600: #dc2626;
+
+    /* Neutrals: Hull Gray */
+    --color-hull-100: #f5f5f4;
+    --color-hull-300: #d6d3d1;
+    --color-hull-500: #78716c;
+    --color-hull-900: #1c1917;
+
+    /* Shadows */
+    --shadow-btn: 0 1px 2px 0 rgb(0 0 0 / 0.15);
+    --shadow-panel: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+    --shadow-glow-primary: 0 0 0 3px rgb(249 115 22 / 0.3);
+
+    /* Border Radius */
+    --radius-tactical: 4px;
+    --radius-panel: 6px;
+    --radius-badge: 3px;
+
+    /* Transitions */
+    --transition-fast: 150ms ease-out;
+    --transition-normal: 200ms ease-out;
   }
 
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Dark mode by default - "Space backgrounds" */
   body {
-    @apply bg-gray-50 text-gray-900;
+    background-color: #0f172a; /* space-900 */
+    color: #f5f5f4; /* hull-100 */
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  /* Headings use Barlow */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-barlow), system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+  }
+
+  /* Links default to data cyan */
+  a {
+    color: #22d3ee; /* data-400 */
+    transition: color 150ms ease-out;
+  }
+
+  a:hover {
+    color: #06b6d4; /* data-500 */
+  }
+
+  /* Focus visible for accessibility */
+  :focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px #0f172a, 0 0 0 4px #f97316; /* ring with space-900 offset and primary-500 */
+  }
+
+  /* Selection styling */
+  ::selection {
+    background-color: rgb(249 115 22 / 0.3); /* primary-500/30 */
+    color: #f5f5f4; /* hull-100 */
+  }
+
+  /* Scrollbar styling for webkit browsers */
+  ::-webkit-scrollbar {
+    width: 0.5rem;
+    height: 0.5rem;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: #020617; /* space-950 */
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: #475569; /* space-600 */
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #64748b; /* space-500 */
   }
 }
 
 @layer components {
+  /* Container */
   .container-app {
     @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Panel: Base card/container styling */
+  .panel {
+    background-color: #1e293b; /* space-800 */
+    border: 1px solid #334155; /* space-700 */
+    border-radius: 6px; /* panel */
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.3), 0 1px 2px -1px rgb(0 0 0 / 0.3);
+  }
+
+  .panel-header {
+    border-bottom: 1px solid #334155; /* space-700 */
+    padding: 1rem 1.5rem;
+  }
+
+  .panel-content {
+    padding: 1rem 1.5rem;
+  }
+
+  /* Optional: Subtle scanline overlay for panels */
+  .scanline-overlay {
+    position: relative;
+  }
+
+  .scanline-overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgb(0 0 0 / 0.03) 2px,
+      rgb(0 0 0 / 0.03) 4px
+    );
+    border-radius: inherit;
+  }
+}
+
+@layer utilities {
+  /* Glow utilities */
+  .glow-primary {
+    box-shadow: 0 0 20px rgb(249 115 22 / 0.3);
+  }
+
+  .glow-data {
+    box-shadow: 0 0 20px rgb(6 182 212 / 0.3);
+  }
+
+  .glow-tactical {
+    box-shadow: 0 0 20px rgb(34 197 94 / 0.3);
+  }
+
+  /* Text gradients */
+  .text-gradient-primary {
+    background: linear-gradient(to right, #fb923c, #ea580c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-gradient-data {
+    background: linear-gradient(to right, #22d3ee, #0891b2);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 }

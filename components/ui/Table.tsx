@@ -8,7 +8,7 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(
       <div className="overflow-x-auto">
         <table
           ref={ref}
-          className={`min-w-full divide-y divide-gray-200 ${className}`}
+          className={`min-w-full divide-y divide-space-600 ${className}`}
           {...props}
         >
           {children}
@@ -25,7 +25,7 @@ interface TableHeaderProps extends HTMLAttributes<HTMLTableSectionElement> {}
 export const TableHeader = forwardRef<HTMLTableSectionElement, TableHeaderProps>(
   ({ className = '', children, ...props }, ref) => {
     return (
-      <thead ref={ref} className={`bg-gray-50 ${className}`} {...props}>
+      <thead ref={ref} className={`bg-space-800 ${className}`} {...props}>
         {children}
       </thead>
     );
@@ -41,7 +41,7 @@ export const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(
     return (
       <tbody
         ref={ref}
-        className={`divide-y divide-gray-200 bg-white ${className}`}
+        className={`divide-y divide-space-600 bg-space-800 ${className}`}
         {...props}
       >
         {children}
@@ -59,7 +59,7 @@ export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(
     return (
       <tr
         ref={ref}
-        className={`hover:bg-gray-50 transition-colors ${className}`}
+        className={`hover:bg-space-700 transition-colors ${className}`}
         {...props}
       >
         {children}
@@ -77,7 +77,7 @@ export const TableHead = forwardRef<HTMLTableCellElement, TableHeadProps>(
     return (
       <th
         ref={ref}
-        className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${className}`}
+        className={`px-6 py-3 text-left text-xs font-medium text-hull-400 uppercase tracking-wider ${className}`}
         {...props}
       >
         {children}
@@ -95,7 +95,7 @@ export const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>(
     return (
       <td
         ref={ref}
-        className={`px-6 py-4 whitespace-nowrap text-sm text-gray-900 ${className}`}
+        className={`px-6 py-4 whitespace-nowrap text-sm text-hull-100 ${className}`}
         {...props}
       >
         {children}

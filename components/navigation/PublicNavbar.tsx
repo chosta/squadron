@@ -10,7 +10,7 @@ export function PublicNavbar() {
   const { isAuthenticated, isLoading } = useAuth();
 
   return (
-    <header className="bg-white border-b border-gray-200">
+    <header className="bg-space-800 border-b border-space-600">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <NavLogo />
@@ -23,7 +23,7 @@ export function PublicNavbar() {
             )}
 
             {isLoading ? (
-              <div className="h-8 w-8 rounded-full bg-gray-200 animate-pulse" />
+              <div className="h-8 w-8 rounded-full bg-space-700 animate-pulse" />
             ) : isAuthenticated ? (
               <ProfileDropdown />
             ) : (

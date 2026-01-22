@@ -14,17 +14,17 @@ export function AdminNav() {
   const { user, logout } = useAuth();
 
   return (
-    <nav className="w-64 bg-gray-900 min-h-screen p-4 flex flex-col">
+    <nav className="w-64 bg-space-800 min-h-screen p-4 flex flex-col border-r border-space-600">
       <div className="mb-8">
-        <Link href="/" className="text-white text-xl font-bold">
+        <Link href="/" className="text-hull-100 text-xl font-bold">
           Squadron
         </Link>
-        <p className="text-gray-400 text-sm mt-1">Admin Panel</p>
+        <p className="text-hull-400 text-sm mt-1">Admin Panel</p>
       </div>
 
       {/* User info */}
       {user && (
-        <div className="mb-6 px-4 py-3 bg-gray-800 rounded-lg">
+        <div className="mb-6 px-4 py-3 bg-space-700 rounded-lg">
           <div className="flex items-center gap-3">
             {user.ethosData.avatarUrl ? (
               <img
@@ -33,17 +33,17 @@ export function AdminNav() {
                 className="w-8 h-8 rounded-full object-cover"
               />
             ) : (
-              <div className="w-8 h-8 rounded-full bg-indigo-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center">
                 <span className="text-white text-sm font-medium">
                   {(user.ethosData.displayName || user.ethosData.username || 'U')[0].toUpperCase()}
                 </span>
               </div>
             )}
             <div className="flex-1 min-w-0">
-              <p className="text-white text-sm font-medium truncate">
+              <p className="text-hull-100 text-sm font-medium truncate">
                 {user.customDisplayName || user.ethosData.displayName || user.ethosData.username}
               </p>
-              <p className="text-gray-400 text-xs truncate">
+              <p className="text-hull-400 text-xs truncate">
                 Score: {user.ethosData.score ?? 'N/A'}
               </p>
             </div>
@@ -65,7 +65,7 @@ export function AdminNav() {
                   flex items-center space-x-3 px-4 py-2.5 rounded-lg transition-colors
                   ${isActive
                     ? 'bg-primary-600 text-white'
-                    : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                    : 'text-hull-300 hover:bg-space-700 hover:text-hull-100'
                   }
                 `}
               >
@@ -89,7 +89,7 @@ export function AdminNav() {
       <div className="mt-auto space-y-2">
         <Link
           href="/profile"
-          className="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+          className="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-hull-300 hover:bg-space-700 hover:text-hull-100 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -98,7 +98,7 @@ export function AdminNav() {
         </Link>
         <Link
           href="/"
-          className="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+          className="flex items-center space-x-3 px-4 py-2.5 rounded-lg text-hull-300 hover:bg-space-700 hover:text-hull-100 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
@@ -107,7 +107,7 @@ export function AdminNav() {
         </Link>
         <button
           onClick={logout}
-          className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors"
+          className="w-full flex items-center space-x-3 px-4 py-2.5 rounded-lg text-hull-300 hover:bg-space-700 hover:text-hull-100 transition-colors"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

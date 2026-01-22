@@ -25,11 +25,11 @@ export default async function SquadPage({ params }: PageProps) {
     : false;
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-space-900">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <Link
           href="/squads"
-          className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-gray-900 mb-6"
+          className="inline-flex items-center gap-2 text-sm text-hull-400 hover:text-hull-100 mb-6"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -37,7 +37,7 @@ export default async function SquadPage({ params }: PageProps) {
           Back to Squads
         </Link>
 
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+        <div className="bg-space-800 rounded-xl border border-space-600 shadow-sm overflow-hidden">
           <div className="p-8">
             <div className="flex items-start gap-6">
               {squad.avatarUrl ? (
@@ -47,8 +47,8 @@ export default async function SquadPage({ params }: PageProps) {
                   className="w-24 h-24 rounded-xl object-cover"
                 />
               ) : (
-                <div className="w-24 h-24 rounded-xl bg-primary-100 flex items-center justify-center">
-                  <span className="text-4xl text-primary-600">
+                <div className="w-24 h-24 rounded-xl bg-primary-500/20 flex items-center justify-center">
+                  <span className="text-4xl text-primary-400">
                     {squad.name.charAt(0).toUpperCase()}
                   </span>
                 </div>
@@ -56,13 +56,13 @@ export default async function SquadPage({ params }: PageProps) {
               <div className="flex-1">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <h1 className="text-3xl font-bold text-gray-900">{squad.name}</h1>
+                    <h1 className="text-3xl font-bold text-hull-100">{squad.name}</h1>
                     {squad.isActive ? (
-                      <span className="px-2.5 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                      <span className="px-2.5 py-1 text-xs font-medium bg-green-500/20 text-green-400 rounded-full">
                         Active
                       </span>
                     ) : (
-                      <span className="px-2.5 py-1 text-xs font-medium bg-gray-100 text-gray-600 rounded-full">
+                      <span className="px-2.5 py-1 text-xs font-medium bg-space-700 text-hull-400 rounded-full">
                         Inactive
                       </span>
                     )}
@@ -81,9 +81,9 @@ export default async function SquadPage({ params }: PageProps) {
                   )}
                 </div>
                 {squad.description && (
-                  <p className="mt-3 text-gray-600">{squad.description}</p>
+                  <p className="mt-3 text-hull-400">{squad.description}</p>
                 )}
-                <div className="mt-4 flex items-center gap-6 text-sm text-gray-500">
+                <div className="mt-4 flex items-center gap-6 text-sm text-hull-400">
                   <span className="flex items-center gap-1.5">
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -95,15 +95,15 @@ export default async function SquadPage({ params }: PageProps) {
             </div>
           </div>
 
-          <div className="border-t border-gray-200">
+          <div className="border-t border-space-600">
             <div className="p-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Members</h2>
+              <h2 className="text-lg font-semibold text-hull-100 mb-4">Members</h2>
               <div className="space-y-4">
                 {squad.members.map((member) => (
                   <Link
                     key={member.id}
                     href={`/users/${member.userId}`}
-                    className="flex items-center gap-4 p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors"
+                    className="flex items-center gap-4 p-4 bg-space-700 rounded-lg hover:bg-space-600 transition-colors"
                   >
                     <UserAvatarWithValidator
                       src={member.user.ethosAvatarUrl}
@@ -113,17 +113,17 @@ export default async function SquadPage({ params }: PageProps) {
                     />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-gray-900">
+                        <span className="font-medium text-hull-100">
                           {member.user.ethosDisplayName || member.user.ethosUsername || 'Unknown'}
                         </span>
                         {member.userId === squad.captainId && (
-                          <span className="px-2 py-0.5 text-xs font-medium bg-yellow-100 text-yellow-800 rounded-full">
+                          <span className="px-2 py-0.5 text-xs font-medium bg-yellow-500/20 text-yellow-400 rounded-full">
                             Captain
                           </span>
                         )}
                       </div>
                       {member.user.ethosScore !== null && (
-                        <p className="text-sm text-gray-500 mt-0.5">
+                        <p className="text-sm text-hull-400 mt-0.5">
                           Ethos Score: {member.user.ethosScore}
                         </p>
                       )}

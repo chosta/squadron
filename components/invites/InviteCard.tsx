@@ -16,7 +16,7 @@ export function InviteCard({ invite, onAccept, onDecline, inviterIsValidator = f
   const daysUntilExpiry = Math.ceil((expiresAt.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+    <div className="bg-space-800 rounded-xl border border-space-600 shadow-sm p-6">
       <div className="flex items-start gap-4">
         <div className="flex-shrink-0">
           {invite.squad.avatarUrl ? (
@@ -26,18 +26,18 @@ export function InviteCard({ invite, onAccept, onDecline, inviterIsValidator = f
               className="w-14 h-14 rounded-lg object-cover"
             />
           ) : (
-            <div className="w-14 h-14 rounded-lg bg-primary-100 flex items-center justify-center">
-              <span className="text-2xl text-primary-600">
+            <div className="w-14 h-14 rounded-lg bg-primary-500/20 flex items-center justify-center">
+              <span className="text-2xl text-primary-400">
                 {invite.squad.name.charAt(0).toUpperCase()}
               </span>
             </div>
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg font-semibold text-gray-900">
+          <h3 className="text-lg font-semibold text-hull-100">
             {invite.squad.name}
           </h3>
-          <p className="text-sm text-gray-600 mt-1 flex items-center gap-1">
+          <p className="text-sm text-hull-400 mt-1 flex items-center gap-1">
             Invited by{' '}
             <span className="font-medium">
               {invite.inviter.ethosDisplayName || invite.inviter.ethosUsername || 'Unknown'}
@@ -45,15 +45,15 @@ export function InviteCard({ invite, onAccept, onDecline, inviterIsValidator = f
             {inviterIsValidator && <ValidatorBadge size="sm" />}
           </p>
           <div className="mt-2 flex items-center gap-3">
-            <span className="text-sm text-gray-500">Role:</span>
+            <span className="text-sm text-hull-400">Role:</span>
             <SquadRoleBadge role={invite.role} size="sm" />
           </div>
           {invite.message && (
-            <p className="mt-3 text-sm text-gray-600 italic">
+            <p className="mt-3 text-sm text-hull-400 italic">
               &ldquo;{invite.message}&rdquo;
             </p>
           )}
-          <p className="mt-2 text-xs text-gray-400">
+          <p className="mt-2 text-xs text-hull-500">
             {daysUntilExpiry > 0
               ? `Expires in ${daysUntilExpiry} day${daysUntilExpiry === 1 ? '' : 's'}`
               : 'Expires today'}

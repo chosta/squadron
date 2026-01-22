@@ -29,7 +29,7 @@ export function ProfileDropdown() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 rounded-full hover:ring-2 hover:ring-gray-200 transition-all"
+        className="flex items-center gap-2 rounded-full hover:ring-2 hover:ring-space-600 transition-all"
         aria-expanded={isOpen}
         aria-haspopup="true"
       >
@@ -41,30 +41,30 @@ export function ProfileDropdown() {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
-          <div className="px-4 py-2 border-b border-gray-100">
-            <p className="text-sm font-medium text-gray-900 truncate">{displayName}</p>
+        <div className="absolute right-0 mt-2 w-48 bg-space-800 rounded-lg shadow-lg border border-space-600 py-1 z-50">
+          <div className="px-4 py-2 border-b border-space-700">
+            <p className="text-sm font-medium text-hull-100 truncate">{displayName}</p>
             {user.ethosData.score !== null && (
-              <p className="text-xs text-gray-500">Score: {user.ethosData.score}</p>
+              <p className="text-xs text-hull-400">Score: {user.ethosData.score}</p>
             )}
           </div>
 
           <Link
             href="/profile"
             onClick={() => setIsOpen(false)}
-            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+            className="block px-4 py-2 text-sm text-hull-300 hover:bg-space-700"
           >
             View Profile
           </Link>
 
-          <div className="border-t border-gray-100">
+          <div className="border-t border-space-700">
             <button
               onClick={() => {
                 setIsOpen(false);
                 logout();
               }}
               disabled={isLoading}
-              className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 disabled:opacity-50"
+              className="w-full text-left px-4 py-2 text-sm text-hull-300 hover:bg-space-700 disabled:opacity-50"
             >
               {isLoading ? 'Signing out...' : 'Sign Out'}
             </button>

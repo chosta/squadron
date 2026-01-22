@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { positionService } from '@/lib/services/position-service';
-import type { OpenPositionWithSquad, ListPositionsFilter, EthosScoreTier } from '@/types/position';
+import type { OpenPositionWithSquad, ListPositionsFilter, EthosScoreTier, Benefit } from '@/types/position';
 import type { SquadRole } from '@/types/squad';
 
 interface PositionsApiResponse {
@@ -16,9 +16,15 @@ export async function GET(
   try {
     const { searchParams } = new URL(request.url);
 
+    const benefitsParam = searchParams.get('benefits');
+    const benefits = benefitsParam
+      ? benefitsParam.split(',').filter(Boolean) as Benefit[]
+      : undefined;
+
     const filter: ListPositionsFilter = {
       role: searchParams.get('role') as SquadRole | undefined,
       ethosScoreTier: searchParams.get('ethosScoreTier') as EthosScoreTier | undefined,
+      benefits,
       limit: searchParams.get('limit') ? parseInt(searchParams.get('limit')!, 10) : 20,
       offset: searchParams.get('offset') ? parseInt(searchParams.get('offset')!, 10) : 0,
     };

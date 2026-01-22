@@ -3,8 +3,9 @@
 import { useState } from 'react';
 import { SquadRoleSelector } from '@/components/squads/SquadRoleSelector';
 import { EthosScoreTierSelect } from './EthosScoreTierSelect';
+import { BenefitsSelect } from './BenefitsSelect';
 import type { SquadRole } from '@/types/squad';
-import type { EthosScoreTier, CreatePositionInput } from '@/types/position';
+import type { EthosScoreTier, CreatePositionInput, Benefit } from '@/types/position';
 
 interface PositionFormProps {
   onSubmit: (input: CreatePositionInput) => Promise<void>;
@@ -17,6 +18,7 @@ export function PositionForm({ onSubmit, onCancel, isSubmitting = false }: Posit
   const [description, setDescription] = useState('');
   const [ethosScoreTier, setEthosScoreTier] = useState<EthosScoreTier>('BELOW_1400');
   const [requiresMutualVouch, setRequiresMutualVouch] = useState(false);
+  const [benefits, setBenefits] = useState<Benefit[]>([]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,6 +27,7 @@ export function PositionForm({ onSubmit, onCancel, isSubmitting = false }: Posit
       description: description || undefined,
       ethosScoreTier,
       requiresMutualVouch,
+      benefits: benefits.length > 0 ? benefits : undefined,
     });
   };
 
@@ -82,6 +85,20 @@ export function PositionForm({ onSubmit, onCancel, isSubmitting = false }: Posit
         <label htmlFor="requiresMutualVouch" className="text-sm text-gray-700">
           Require mutual vouch with captain
         </label>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Benefits (Optional)
+        </label>
+        <BenefitsSelect
+          value={benefits}
+          onChange={setBenefits}
+          disabled={isSubmitting}
+        />
+        <p className="mt-1 text-xs text-gray-500">
+          What will the member get from this position?
+        </p>
       </div>
 
       <div className="flex gap-3 pt-4">

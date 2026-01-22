@@ -21,9 +21,9 @@ export function DashboardNav() {
   };
 
   return (
-    <nav className="w-64 bg-white border-r border-gray-200 min-h-screen">
+    <nav className="w-64 bg-space-800 border-r border-space-600 min-h-screen">
       <div className="p-6">
-        <Link href="/" className="text-xl font-bold text-gray-900">
+        <Link href="/" className="text-xl font-bold text-hull-100">
           Squadron
         </Link>
       </div>
@@ -34,8 +34,8 @@ export function DashboardNav() {
               href={item.href}
               className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                 isActive(item.href)
-                  ? 'bg-primary-50 text-primary-700'
-                  : 'text-gray-700 hover:bg-gray-100'
+                  ? 'bg-primary-500/20 text-primary-400'
+                  : 'text-hull-300 hover:bg-space-700'
               }`}
             >
               <svg

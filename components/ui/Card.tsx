@@ -2,6 +2,8 @@ import { HTMLAttributes, forwardRef } from 'react';
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   padding?: 'none' | 'sm' | 'md' | 'lg';
+  variant?: 'default' | 'elevated' | 'outlined';
+  scanline?: boolean;
 }
 
 const paddingStyles = {
@@ -11,12 +13,21 @@ const paddingStyles = {
   lg: 'p-8',
 };
 
+const variantStyles = {
+  default: 'bg-space-800 border border-space-700 shadow-panel',
+  elevated: 'bg-space-800 border border-space-600 shadow-panel-hover',
+  outlined: 'bg-transparent border border-space-600',
+};
+
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ padding = 'md', className = '', children, ...props }, ref) => {
+  ({ padding = 'md', variant = 'default', scanline = false, className = '', children, ...props }, ref) => {
+    const baseStyles = 'rounded-panel transition-shadow duration-150';
+    const scanlineClass = scanline ? 'scanline-overlay' : '';
+
     return (
       <div
         ref={ref}
-        className={`bg-white rounded-xl border border-gray-200 shadow-sm ${paddingStyles[padding]} ${className}`}
+        className={`${baseStyles} ${variantStyles[variant]} ${paddingStyles[padding]} ${scanlineClass} ${className}`}
         {...props}
       >
         {children}
@@ -34,7 +45,7 @@ export const CardHeader = forwardRef<HTMLDivElement, CardHeaderProps>(
     return (
       <div
         ref={ref}
-        className={`border-b border-gray-200 px-6 py-4 ${className}`}
+        className={`border-b border-space-700 px-6 py-4 ${className}`}
         {...props}
       >
         {children}
@@ -52,7 +63,7 @@ export const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
     return (
       <h3
         ref={ref}
-        className={`text-lg font-semibold text-gray-900 ${className}`}
+        className={`text-lg font-semibold text-hull-100 font-heading tracking-tight ${className}`}
         {...props}
       >
         {children}
@@ -62,6 +73,24 @@ export const CardTitle = forwardRef<HTMLHeadingElement, CardTitleProps>(
 );
 
 CardTitle.displayName = 'CardTitle';
+
+interface CardDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
+
+export const CardDescription = forwardRef<HTMLParagraphElement, CardDescriptionProps>(
+  ({ className = '', children, ...props }, ref) => {
+    return (
+      <p
+        ref={ref}
+        className={`text-sm text-hull-400 mt-1 ${className}`}
+        {...props}
+      >
+        {children}
+      </p>
+    );
+  }
+);
+
+CardDescription.displayName = 'CardDescription';
 
 interface CardContentProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -80,3 +109,21 @@ export const CardContent = forwardRef<HTMLDivElement, CardContentProps>(
 );
 
 CardContent.displayName = 'CardContent';
+
+interface CardFooterProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const CardFooter = forwardRef<HTMLDivElement, CardFooterProps>(
+  ({ className = '', children, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={`border-t border-space-700 px-6 py-4 ${className}`}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+
+CardFooter.displayName = 'CardFooter';

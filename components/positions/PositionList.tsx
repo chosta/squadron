@@ -101,6 +101,7 @@ export function PositionList({
                 <PositionRequirements
                   ethosScoreTier={position.ethosScoreTier}
                   requiresMutualVouch={position.requiresMutualVouch}
+                  benefits={position.benefits}
                   compact
                 />
               </div>

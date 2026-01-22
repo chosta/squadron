@@ -12,6 +12,7 @@ import type {
   PositionEligibility,
   ListPositionsFilter,
   EthosScoreTier,
+  Benefit,
 } from '@/types/position';
 import {
   ETHOS_SCORE_TIERS,
@@ -99,6 +100,7 @@ export class PositionService {
         description: input.description,
         ethosScoreTier: input.ethosScoreTier ?? 'BELOW_1400',
         requiresMutualVouch: input.requiresMutualVouch ?? false,
+        benefits: input.benefits ?? [],
         expiresAt,
       },
       include: {
@@ -383,7 +385,7 @@ export class PositionService {
    * List all open positions (browse)
    */
   async listOpenPositions(filter: ListPositionsFilter = {}): Promise<OpenPositionWithSquad[]> {
-    const { role, ethosScoreTier, limit = 20, offset = 0 } = filter;
+    const { role, ethosScoreTier, benefits, limit = 20, offset = 0 } = filter;
 
     const positions = await prisma.openPosition.findMany({
       where: {
@@ -391,6 +393,7 @@ export class PositionService {
         expiresAt: { gt: new Date() },
         ...(role ? { role } : {}),
         ...(ethosScoreTier ? { ethosScoreTier } : {}),
+        ...(benefits && benefits.length > 0 ? { benefits: { hasSome: benefits } } : {}),
       },
       include: {
         squad: { select: SQUAD_SELECT },

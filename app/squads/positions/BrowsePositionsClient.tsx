@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import type { OpenPositionWithSquad, EthosScoreTier, PositionEligibility } from '@/types/position';
+import type { OpenPositionWithSquad, EthosScoreTier, PositionEligibility, Benefit } from '@/types/position';
 import type { SquadRole } from '@/types/squad';
 import { SQUAD_ROLES, SQUAD_ROLES as ROLES_CONFIG } from '@/types/squad';
 import { ETHOS_SCORE_TIERS } from '@/types/position';
 import { PositionCard } from '@/components/positions/PositionCard';
+import { BenefitsFilterSelect } from '@/components/positions/BenefitsFilterSelect';
 import { ApplyModal } from '@/components/applications/ApplyModal';
 import { EmptyState } from '@/components/ui/EmptyState';
 
@@ -19,6 +20,7 @@ export function BrowsePositionsClient({ initialPositions }: BrowsePositionsClien
   const [positions, setPositions] = useState(initialPositions);
   const [roleFilter, setRoleFilter] = useState<SquadRole | ''>('');
   const [tierFilter, setTierFilter] = useState<EthosScoreTier | ''>('');
+  const [benefitsFilter, setBenefitsFilter] = useState<Benefit[]>([]);
   const [selectedPosition, setSelectedPosition] = useState<OpenPositionWithSquad | null>(null);
   const [eligibility, setEligibility] = useState<Record<string, PositionEligibility>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,6 +59,7 @@ export function BrowsePositionsClient({ initialPositions }: BrowsePositionsClien
       const params = new URLSearchParams();
       if (roleFilter) params.set('role', roleFilter);
       if (tierFilter) params.set('ethosScoreTier', tierFilter);
+      if (benefitsFilter.length > 0) params.set('benefits', benefitsFilter.join(','));
       params.set('limit', '50');
 
       const res = await fetch(`/api/positions?${params.toString()}`);
@@ -75,7 +78,7 @@ export function BrowsePositionsClient({ initialPositions }: BrowsePositionsClien
 
   useEffect(() => {
     handleFilterChange();
-  }, [roleFilter, tierFilter]);
+  }, [roleFilter, tierFilter, benefitsFilter]);
 
   const handleApply = (position: OpenPositionWithSquad) => {
     setSelectedPosition(position);
@@ -155,6 +158,14 @@ export function BrowsePositionsClient({ initialPositions }: BrowsePositionsClien
             ))}
           </select>
         </div>
+
+        <div className="w-48">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Benefits</label>
+          <BenefitsFilterSelect
+            value={benefitsFilter}
+            onChange={setBenefitsFilter}
+          />
+        </div>
       </div>
 
       {/* Results */}
@@ -163,7 +174,7 @@ export function BrowsePositionsClient({ initialPositions }: BrowsePositionsClien
       ) : positions.length === 0 ? (
         <EmptyState
           title="No open positions"
-          description={roleFilter || tierFilter ? 'Try adjusting your filters' : 'Check back later for new opportunities'}
+          description={roleFilter || tierFilter || benefitsFilter.length > 0 ? 'Try adjusting your filters' : 'Check back later for new opportunities'}
         />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

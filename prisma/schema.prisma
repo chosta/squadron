@@ -60,6 +60,15 @@ enum ApplicationStatus {
   EXPIRED
 }
 
+enum Benefit {
+  EQUITY
+  CASH
+  TIPS
+  EXPOSURE
+  MUTUAL
+  FUN
+}
+
 enum NotificationType {
   APPLICATION_RECEIVED
   APPLICATION_APPROVED
@@ -240,6 +249,7 @@ model OpenPosition {
   description         String?        @db.Text
   ethosScoreTier      EthosScoreTier @default(BELOW_1400)
   requiresMutualVouch Boolean        @default(false)
+  benefits            Benefit[]      @default([])
 
   expiresAt           DateTime       // 30 days from creation
   isOpen              Boolean        @default(true)
@@ -249,6 +259,7 @@ model OpenPosition {
   @@index([squadId])
   @@index([isOpen, expiresAt])
   @@index([role])
+  @@index([benefits])
 }
 
 model Application {

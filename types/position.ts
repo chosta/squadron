@@ -26,6 +26,23 @@ export type NotificationType =
   | 'APPLICATION_EXPIRED'
   | 'POSITION_DELETED';
 
+export type Benefit = 'EQUITY' | 'CASH' | 'TIPS' | 'EXPOSURE' | 'MUTUAL' | 'FUN';
+
+// Benefit configuration
+export interface BenefitConfig {
+  label: string;
+  emoji: string;
+}
+
+export const BENEFITS: Record<Benefit, BenefitConfig> = {
+  EQUITY: { label: 'Equity', emoji: '📈' },
+  CASH: { label: 'Cash', emoji: '💵' },
+  TIPS: { label: 'Tips', emoji: '💰' },
+  EXPOSURE: { label: 'Exposure', emoji: '📣' },
+  MUTUAL: { label: 'Mutual', emoji: '🤝' },
+  FUN: { label: 'Fun', emoji: '🎉' },
+};
+
 // Ethos score tier configuration
 export interface EthosScoreTierConfig {
   label: string;
@@ -53,6 +70,7 @@ export interface OpenPosition {
   description: string | null;
   ethosScoreTier: EthosScoreTier;
   requiresMutualVouch: boolean;
+  benefits: Benefit[];
   expiresAt: string;
   isOpen: boolean;
 }
@@ -113,6 +131,7 @@ export interface CreatePositionInput {
   description?: string;
   ethosScoreTier?: EthosScoreTier;
   requiresMutualVouch?: boolean;
+  benefits?: Benefit[];
 }
 
 export interface ApplyToPositionInput {
@@ -147,6 +166,7 @@ export interface CreateNotificationInput {
 export interface ListPositionsFilter {
   role?: SquadRole;
   ethosScoreTier?: EthosScoreTier;
+  benefits?: Benefit[];
   limit?: number;
   offset?: number;
 }

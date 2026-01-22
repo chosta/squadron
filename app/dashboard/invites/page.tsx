@@ -59,20 +59,20 @@ export default function InvitesPage() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Invites</h1>
-          <p className="mt-1 text-gray-600">Loading your pending invites...</p>
+          <h1 className="text-2xl font-bold text-hull-100">Invites</h1>
+          <p className="mt-1 text-hull-400">Loading your pending invites...</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 animate-pulse"
+              className="bg-space-800 rounded-xl border border-space-600 shadow-sm p-6 animate-pulse"
             >
               <div className="flex items-start gap-4">
-                <div className="w-14 h-14 rounded-lg bg-gray-200" />
+                <div className="w-14 h-14 rounded-lg bg-space-700" />
                 <div className="flex-1 space-y-2">
-                  <div className="h-5 bg-gray-200 rounded w-3/4" />
-                  <div className="h-4 bg-gray-200 rounded w-1/2" />
+                  <div className="h-5 bg-space-700 rounded w-3/4" />
+                  <div className="h-4 bg-space-700 rounded w-1/2" />
                 </div>
               </div>
             </div>
@@ -85,8 +85,8 @@ export default function InvitesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Invites</h1>
-        <p className="mt-1 text-gray-600">
+        <h1 className="text-2xl font-bold text-hull-100">Invites</h1>
+        <p className="mt-1 text-hull-400">
           {invites.length === 0
             ? 'No pending invites at the moment.'
             : `You have ${invites.length} pending invite${invites.length === 1 ? '' : 's'}.`}
@@ -94,10 +94,10 @@ export default function InvitesPage() {
       </div>
 
       {invites.length === 0 ? (
-        <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-12 text-center">
-          <div className="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+        <div className="bg-space-800 rounded-xl border border-space-600 shadow-sm p-12 text-center">
+          <div className="mx-auto w-16 h-16 bg-space-700 rounded-full flex items-center justify-center mb-4">
             <svg
-              className="w-8 h-8 text-gray-400"
+              className="w-8 h-8 text-hull-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -110,8 +110,8 @@ export default function InvitesPage() {
               />
             </svg>
           </div>
-          <h3 className="text-lg font-semibold text-gray-900">No pending invites</h3>
-          <p className="mt-2 text-gray-500">
+          <h3 className="text-lg font-semibold text-hull-100">No pending invites</h3>
+          <p className="mt-2 text-hull-400">
             When someone invites you to join their squad, it will appear here.
           </p>
         </div>
