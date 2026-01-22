@@ -176,7 +176,7 @@ export default function HomePage() {
               <Card className="p-6 flex flex-col">
                 <h3 className="text-lg font-semibold text-hull-100 mb-2">The Units</h3>
                 <p className="text-hull-400 mb-4">
-                  Launch or join role-based squads. Earn a higher Ethos to lead and manage more units.
+                  Command your own unit as Captain or join an existing squad based on the strength of your expertise and Ethos reputation.
                 </p>
                 {/* Overlapping Squad Avatars */}
                 {!statsLoading && landingStats?.squads && landingStats.squads.length > 0 && (
