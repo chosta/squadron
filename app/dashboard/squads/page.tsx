@@ -18,9 +18,6 @@ export default async function SquadsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-hull-100">My Squads</h1>
-          <p className="mt-1 text-hull-400">
-            Manage your squads and memberships.
-          </p>
         </div>
         <div className="flex items-center gap-4">
           <SquadQuota variant="inline" />

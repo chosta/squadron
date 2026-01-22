@@ -79,13 +79,13 @@ export function SquadForm({ mode, initialData, onSubmit }: SquadFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+        <div className="p-4 bg-red-900/20 border border-red-800 rounded-lg text-red-400 text-sm">
           {error}
         </div>
       )}
 
       <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="name" className="block text-sm font-medium text-hull-300 mb-1">
           Squad Name *
         </label>
         <Input
@@ -100,7 +100,7 @@ export function SquadForm({ mode, initialData, onSubmit }: SquadFormProps) {
       </div>
 
       <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="description" className="block text-sm font-medium text-hull-300 mb-1">
           Description
         </label>
         <textarea
@@ -110,12 +110,12 @@ export function SquadForm({ mode, initialData, onSubmit }: SquadFormProps) {
           placeholder="What's your squad about?"
           rows={3}
           maxLength={500}
-          className="block w-full px-3 py-2 border border-gray-300 rounded-lg text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+          className="block w-full px-3 py-2 border border-space-600 bg-space-700 text-hull-100 rounded-lg text-sm placeholder:text-hull-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
         />
       </div>
 
       <div>
-        <label htmlFor="avatarUrl" className="block text-sm font-medium text-gray-700 mb-1">
+        <label htmlFor="avatarUrl" className="block text-sm font-medium text-hull-300 mb-1">
           Avatar URL
         </label>
         <Input
@@ -129,14 +129,14 @@ export function SquadForm({ mode, initialData, onSubmit }: SquadFormProps) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label htmlFor="maxSize" className="block text-sm font-medium text-gray-700 mb-1">
+          <label htmlFor="maxSize" className="block text-sm font-medium text-hull-300 mb-1">
             Maximum Members
           </label>
           <select
             id="maxSize"
             value={maxSize}
             onChange={(e) => setMaxSize(Number(e.target.value))}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+            className="block w-full px-3 py-2 border border-space-600 rounded-lg bg-space-700 text-hull-100 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
           >
             {Array.from({ length: SQUAD_MAX_SIZE - SQUAD_MIN_SIZE + 1 }, (_, i) => i + SQUAD_MIN_SIZE).map(
               (size) => (
@@ -154,20 +154,20 @@ export function SquadForm({ mode, initialData, onSubmit }: SquadFormProps) {
               type="checkbox"
               checked={isFixedSize}
               onChange={(e) => setIsFixedSize(e.target.checked)}
-              className="w-4 h-4 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
+              className="w-4 h-4 text-primary-600 border-space-600 bg-space-700 rounded focus:ring-primary-500"
             />
-            <span className="text-sm text-gray-700">Fixed size (no growth)</span>
+            <span className="text-sm text-hull-300">Fixed size (no growth)</span>
           </label>
         </div>
       </div>
 
       {mode === 'create' && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-hull-300 mb-1">
             Your Role
           </label>
           <SquadRoleSelector value={role} onChange={setRole} />
-          <p className="mt-1 text-xs text-gray-500">
+          <p className="mt-1 text-xs text-hull-500">
             Choose your role in this squad. You&apos;ll be the captain and can invite others.
           </p>
         </div>

@@ -21,11 +21,11 @@ export function MyApplicationCard({
   const appliedAt = new Date(application.createdAt);
 
   const statusColors: Record<string, string> = {
-    PENDING: 'bg-yellow-100 text-yellow-800',
-    APPROVED: 'bg-green-100 text-green-800',
-    REJECTED: 'bg-red-100 text-red-800',
-    WITHDRAWN: 'bg-gray-100 text-gray-600',
-    EXPIRED: 'bg-gray-100 text-gray-600',
+    PENDING: 'bg-yellow-500/20 text-yellow-400',
+    APPROVED: 'bg-green-500/20 text-green-400',
+    REJECTED: 'bg-red-500/20 text-red-400',
+    WITHDRAWN: 'bg-space-600 text-hull-400',
+    EXPIRED: 'bg-space-600 text-hull-400',
   };
 
   const statusMessages: Record<string, string> = {
@@ -37,7 +37,7 @@ export function MyApplicationCard({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
+    <div className="bg-space-800 rounded-xl border border-space-600 shadow-sm p-6">
       <div className="flex items-start gap-4">
         <div className="flex-shrink-0">
           {squad.avatarUrl ? (
@@ -47,8 +47,8 @@ export function MyApplicationCard({
               className="w-12 h-12 rounded-lg object-cover"
             />
           ) : (
-            <div className="w-12 h-12 rounded-lg bg-primary-100 flex items-center justify-center">
-              <span className="text-xl text-primary-600">
+            <div className="w-12 h-12 rounded-lg bg-primary-500/20 flex items-center justify-center">
+              <span className="text-xl text-primary-400">
                 {squad.name.charAt(0).toUpperCase()}
               </span>
             </div>
@@ -58,7 +58,7 @@ export function MyApplicationCard({
           <div className="flex items-center gap-2 flex-wrap">
             <Link
               href={`/squads/${squad.id}`}
-              className="font-semibold text-gray-900 hover:text-primary-600"
+              className="font-semibold text-hull-100 hover:text-primary-400"
             >
               {squad.name}
             </Link>
@@ -68,16 +68,16 @@ export function MyApplicationCard({
             <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${statusColors[application.status]}`}>
               {application.status.charAt(0) + application.status.slice(1).toLowerCase()}
             </span>
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-hull-400">
               {statusMessages[application.status]}
             </span>
           </div>
           {application.message && (
-            <p className="mt-2 text-sm text-gray-600 italic line-clamp-2">
+            <p className="mt-2 text-sm text-hull-300 italic line-clamp-2">
               &ldquo;{application.message}&rdquo;
             </p>
           )}
-          <p className="mt-2 text-xs text-gray-400">
+          <p className="mt-2 text-xs text-hull-500">
             Applied {appliedAt.toLocaleDateString()}
           </p>
         </div>
@@ -87,7 +87,7 @@ export function MyApplicationCard({
           <button
             onClick={() => onWithdraw(application.id)}
             disabled={isWithdrawing}
-            className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
+            className="w-full px-4 py-2 text-sm font-medium text-hull-300 bg-space-700 rounded-lg hover:bg-space-600 transition-colors disabled:opacity-50"
           >
             {isWithdrawing ? 'Withdrawing...' : 'Withdraw Application'}
           </button>

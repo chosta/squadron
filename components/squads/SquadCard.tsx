@@ -19,7 +19,7 @@ export function SquadCard({ squad, showManage = false }: SquadCardProps) {
   );
 
   return (
-    <div className="bg-space-800 rounded-xl border border-space-600 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+    <div className="bg-space-800 rounded-xl border border-space-600 shadow-sm overflow-hidden hover:shadow-md transition-shadow flex flex-col">
       {/* Avatar Section - 4:3 aspect ratio, full width */}
       <div className="aspect-[4/3] w-full">
         {squad.avatarUrl ? (
@@ -38,7 +38,7 @@ export function SquadCard({ squad, showManage = false }: SquadCardProps) {
       </div>
 
       {/* Content Section */}
-      <div className="p-6">
+      <div className="p-6 flex-1 flex flex-col">
         <div className="flex items-center gap-2 flex-wrap">
           <h3 className="text-lg font-semibold text-hull-100 truncate leading-tight">
             {squad.name}
@@ -93,7 +93,7 @@ export function SquadCard({ squad, showManage = false }: SquadCardProps) {
         </div>
 
         {/* Buttons */}
-        <div className="mt-4 flex gap-2">
+        <div className="mt-auto pt-4 flex gap-2">
           <Link
             href={`/squads/${squad.id}`}
             className="flex-1 text-center px-4 py-2 text-sm font-medium text-hull-300 bg-space-700 rounded-lg hover:bg-space-600 transition-colors"

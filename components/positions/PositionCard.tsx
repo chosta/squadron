@@ -33,7 +33,7 @@ export function PositionCard({
   ) ?? 0;
 
   return (
-    <div className="bg-space-800 rounded-xl border border-space-600 overflow-hidden hover:border-space-500 transition-colors">
+    <div className="bg-space-800 rounded-xl border border-space-600 overflow-hidden hover:border-space-500 transition-colors flex flex-col">
       {/* Avatar Section - 4:3 aspect ratio */}
       <div className="aspect-[4/3] w-full">
         {position.squad.avatarUrl ? (
@@ -52,7 +52,7 @@ export function PositionCard({
       </div>
 
       {/* Content Section */}
-      <div className="p-5 space-y-2">
+      <div className="p-5 space-y-2 flex-1 flex flex-col">
         {/* Team */}
         <div className="flex items-center gap-2 flex-wrap min-h-7">
           <span className="text-sm text-hull-500 w-24 shrink-0">Team</span>
@@ -134,7 +134,7 @@ export function PositionCard({
           <button
             onClick={onApply}
             disabled={!isEligible}
-            className={`w-full mt-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+            className={`w-full mt-auto px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
               isEligible
                 ? 'text-white bg-primary-600 hover:bg-primary-700'
                 : 'text-hull-500 bg-space-700 cursor-not-allowed'

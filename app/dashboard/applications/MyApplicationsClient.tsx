@@ -51,7 +51,6 @@ export function MyApplicationsClient({ initialApplications }: MyApplicationsClie
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-hull-100">My Applications</h1>
-          <p className="mt-1 text-hull-400">Track your applications to join squads</p>
         </div>
         <Link
           href="/squads/positions"
