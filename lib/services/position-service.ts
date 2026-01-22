@@ -39,6 +39,11 @@ const SQUAD_SELECT = {
   maxSize: true,
   _count: { select: { members: true } },
   captain: { select: USER_SELECT },
+  members: {
+    select: {
+      user: { select: { ethosScore: true } },
+    },
+  },
 } as const;
 
 export class PositionService {
