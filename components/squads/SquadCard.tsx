@@ -1,16 +1,14 @@
 import Link from 'next/link';
 import type { SquadWithMembers } from '@/types/squad';
-import { ValidatorBadge } from '@/components/users/ValidatorBadge';
 import { UserAvatar } from '@/components/users/UserAvatar';
 import { SquadReputation } from './SquadReputation';
 
 interface SquadCardProps {
   squad: SquadWithMembers;
   showManage?: boolean;
-  captainIsValidator?: boolean;
 }
 
-export function SquadCard({ squad, showManage = false, captainIsValidator = false }: SquadCardProps) {
+export function SquadCard({ squad, showManage = false }: SquadCardProps) {
   const memberCount = squad._count?.members ?? squad.members.length;
   const openPositionsCount = squad._count?.openPositions ?? 0;
 
@@ -19,8 +17,6 @@ export function SquadCard({ squad, showManage = false, captainIsValidator = fals
     (sum, m) => sum + (m.user.ethosScore || 0),
     0
   );
-
-  const captainDisplayName = squad.captain.ethosDisplayName || squad.captain.ethosUsername || 'Unknown';
 
   return (
     <div className="bg-space-800 rounded-xl border border-space-600 shadow-sm overflow-hidden hover:shadow-md transition-shadow">
@@ -52,26 +48,40 @@ export function SquadCard({ squad, showManage = false, captainIsValidator = fals
           )}
         </div>
         {squad.description && (
-          <p className="mt-2 text-sm text-hull-400 line-clamp-2">
+          <p className="mt-2 text-sm text-hull-400 line-clamp-3">
             {squad.description}
           </p>
         )}
         <div className="mt-3 flex flex-col gap-1.5 text-sm text-hull-400">
-          <span className="flex items-center gap-1">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-            {memberCount}/{squad.maxSize} members
-          </span>
-          <span className="flex items-center gap-1.5">
-            <UserAvatar
-              src={squad.captain.ethosAvatarUrl}
-              name={captainDisplayName}
-              size="sm"
-              isValidator={captainIsValidator}
-            />
-            <span>Captain: {captainDisplayName}</span>
-          </span>
+          <div className="flex items-center">
+            {squad.members.slice(0, 5).map((member, index) => {
+              const isCaptain = member.userId === squad.captainId;
+              return (
+                <div
+                  key={member.id}
+                  className={`relative ${index > 0 ? '-ml-2' : ''}`}
+                  style={{ zIndex: 5 - index }}
+                >
+                  <UserAvatar
+                    src={member.user.ethosAvatarUrl}
+                    name={member.user.ethosDisplayName || member.user.ethosUsername || 'Member'}
+                    size="sm"
+                    className="ring-2 ring-space-800"
+                  />
+                  {isCaptain && (
+                    <div className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary-500 text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-space-800">
+                      C
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+            {memberCount > 5 && (
+              <div className="-ml-2 flex items-center justify-center w-6 h-6 rounded-full bg-space-600 text-xs text-hull-300 ring-2 ring-space-800" style={{ zIndex: 0 }}>
+                +{memberCount - 5}
+              </div>
+            )}
+          </div>
           {openPositionsCount > 0 && (
             <span className="flex items-center gap-1 text-primary-400">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

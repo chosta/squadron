@@ -4,7 +4,9 @@ import Link from 'next/link';
 import type { OpenPositionWithSquad } from '@/types/position';
 import { SquadRoleBadge } from '@/components/squads/SquadRoleBadge';
 import { SquadReputation } from '@/components/squads/SquadReputation';
-import { PositionRequirements } from './PositionRequirements';
+import { UserAvatar } from '@/components/users/UserAvatar';
+import { EthosScoreTierBadge } from './EthosScoreTierBadge';
+import { BenefitBadge } from './BenefitBadge';
 
 interface PositionCardProps {
   position: OpenPositionWithSquad;
@@ -50,11 +52,13 @@ export function PositionCard({
       </div>
 
       {/* Content Section */}
-      <div className="p-5">
-        <div className="flex items-center gap-2 flex-wrap">
+      <div className="p-5 space-y-2">
+        {/* Team */}
+        <div className="flex items-center gap-2 flex-wrap min-h-7">
+          <span className="text-sm text-hull-500 w-24 shrink-0">Team</span>
           <Link
             href={`/squads/${position.squad.id}`}
-            className="text-lg font-semibold text-hull-100 hover:text-primary-400 truncate"
+            className="text-sm font-semibold text-hull-100 hover:text-primary-400 truncate"
           >
             {position.squad.name}
           </Link>
@@ -62,35 +66,75 @@ export function PositionCard({
             <SquadReputation score={cumulativeReputation} size="sm" />
           )}
         </div>
-        <div className="flex items-center gap-2 mt-1">
+
+        {/* Looking for */}
+        <div className="flex items-center gap-2 min-h-7">
+          <span className="text-sm text-hull-500 w-24 shrink-0">Looking for</span>
           <SquadRoleBadge role={position.role} size="sm" />
-          <span className="text-sm text-hull-400">
-            {memberCount} member{memberCount !== 1 ? 's' : ''}
-          </span>
         </div>
-        {position.description && (
-          <p className="mt-2 text-sm text-hull-400 line-clamp-2">
-            {position.description}
-          </p>
+
+        {/* Team members */}
+        {position.squad.members && position.squad.members.length > 0 && (
+          <div className="flex items-center gap-2 min-h-7">
+            <span className="text-sm text-hull-500 w-24 shrink-0">Members</span>
+            <div className="flex items-center">
+              {position.squad.members.slice(0, 5).map((member, index) => (
+                <div
+                  key={index}
+                  className={index > 0 ? '-ml-2' : ''}
+                  style={{ zIndex: 5 - index }}
+                >
+                  <UserAvatar
+                    src={member.user.ethosAvatarUrl}
+                    name={member.user.ethosDisplayName || member.user.ethosUsername || 'Member'}
+                    size="sm"
+                    className="ring-2 ring-space-800"
+                  />
+                </div>
+              ))}
+              {memberCount > 5 && (
+                <div className="-ml-2 flex items-center justify-center w-6 h-6 rounded-full bg-space-600 text-xs text-hull-300 ring-2 ring-space-800" style={{ zIndex: 0 }}>
+                  +{memberCount - 5}
+                </div>
+              )}
+            </div>
+          </div>
         )}
-        <div className="mt-3">
-          <PositionRequirements
-            ethosScoreTier={position.ethosScoreTier}
-            requiresMutualVouch={position.requiresMutualVouch}
-            benefits={position.benefits}
-            compact
-          />
+
+        {/* Requirements */}
+        <div className="flex items-center gap-2 flex-wrap min-h-7">
+          <span className="text-sm text-hull-500 w-24 shrink-0">Requirements</span>
+          <EthosScoreTierBadge tier={position.ethosScoreTier} size="sm" />
+          {position.requiresMutualVouch && (
+            <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800">
+              Mutual Vouch
+            </span>
+          )}
         </div>
-        <p className="mt-2 text-xs text-hull-500">
+
+        {/* Benefits */}
+        {position.benefits && position.benefits.length > 0 && (
+          <div className="flex items-center gap-2 flex-wrap min-h-7">
+            <span className="text-sm text-hull-500 w-24 shrink-0">Benefits</span>
+            {position.benefits.map((benefit) => (
+              <BenefitBadge key={benefit} benefit={benefit} size="sm" />
+            ))}
+          </div>
+        )}
+
+        {/* Expiry */}
+        <p className="text-[10px] text-hull-500 pt-1">
           {daysUntilExpiry > 0
             ? `Expires in ${daysUntilExpiry} day${daysUntilExpiry === 1 ? '' : 's'}`
             : 'Expires today'}
         </p>
+
+        {/* Apply button */}
         {showApplyButton && (
           <button
             onClick={onApply}
             disabled={!isEligible}
-            className={`w-full mt-4 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+            className={`w-full mt-1 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
               isEligible
                 ? 'text-white bg-primary-600 hover:bg-primary-700'
                 : 'text-hull-500 bg-space-700 cursor-not-allowed'

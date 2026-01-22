@@ -41,7 +41,14 @@ const SQUAD_SELECT = {
   captain: { select: USER_SELECT },
   members: {
     select: {
-      user: { select: { ethosScore: true } },
+      user: {
+        select: {
+          ethosScore: true,
+          ethosAvatarUrl: true,
+          ethosDisplayName: true,
+          ethosUsername: true,
+        },
+      },
     },
   },
 } as const;

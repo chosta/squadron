@@ -108,7 +108,14 @@ export interface OpenPositionWithSquad extends OpenPosition {
   squad: Pick<Squad, 'id' | 'name' | 'avatarUrl'> & {
     _count?: { members: number };
     captain?: UserBasic;
-    members?: { user: { ethosScore: number | null } }[];
+    members?: {
+      user: {
+        ethosScore: number | null;
+        ethosAvatarUrl: string | null;
+        ethosDisplayName: string | null;
+        ethosUsername: string | null;
+      };
+    }[];
   };
   _count?: { applications: number };
 }
