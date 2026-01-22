@@ -129,8 +129,7 @@ export default function HomePage() {
                 &ldquo;If you want to move fast, go alone. If you want to move far, go together.&rdquo;
               </p>
               <p className="text-xl text-hull-400 mb-8 max-w-2xl mx-auto">
-                Squadron is where skilled individuals join small, tactical units called squads.
-                Share knowledge, combine expertise, and leverage your Ethos credibility score to find the right team and conquer your goals.
+                Assemble Your Squad. Skilled individuals. Tactical units. Unstoppable results. Use your Ethos credibility to find the right team and conquer your next big objective.
               </p>
               <div className="flex justify-center gap-4">
                 <AuthButtons />
