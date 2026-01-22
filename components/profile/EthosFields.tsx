@@ -19,14 +19,14 @@ export function EthosFields({ ethosData, onRefresh, isRefreshing }: EthosFieldsP
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-          <LockIcon className="w-4 h-4 text-gray-400" />
+        <h2 className="text-lg font-semibold text-hull-100 flex items-center gap-2">
+          <LockIcon className="w-4 h-4 text-hull-500" />
           Ethos Profile
         </h2>
         <button
           onClick={onRefresh}
           disabled={isRefreshing}
-          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-indigo-600 hover:text-indigo-700 disabled:text-indigo-400"
+          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-primary-400 hover:text-primary-300 disabled:text-primary-600"
         >
           <RefreshIcon className={`w-4 h-4 ${isRefreshing ? 'animate-spin' : ''}`} />
           {isRefreshing ? 'Syncing...' : 'Sync from Ethos'}
@@ -34,7 +34,7 @@ export function EthosFields({ ethosData, onRefresh, isRefreshing }: EthosFieldsP
       </div>
 
       {ethosData.lastSyncedAt && (
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-hull-500">
           Last synced: {new Date(ethosData.lastSyncedAt).toLocaleString()}
         </p>
       )}
@@ -58,7 +58,7 @@ export function EthosFields({ ethosData, onRefresh, isRefreshing }: EthosFieldsP
       {ethosData.description && (
         <div>
           <FieldLabel label="Description" />
-          <p className="text-gray-700 mt-1">{ethosData.description}</p>
+          <p className="text-hull-300 mt-1">{ethosData.description}</p>
         </div>
       )}
 
@@ -99,13 +99,13 @@ export function EthosFields({ ethosData, onRefresh, isRefreshing }: EthosFieldsP
         <div>
           <FieldLabel label="Vouch Stats" />
           <div className="grid grid-cols-2 gap-4 mt-2">
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-500">Vouches Given</p>
-              <p className="text-lg font-semibold">{ethosData.stats.vouch.given.count}</p>
+            <div className="p-3 bg-space-700 rounded-lg">
+              <p className="text-sm text-hull-500">Vouches Given</p>
+              <p className="text-lg font-semibold text-hull-100">{ethosData.stats.vouch.given.count}</p>
             </div>
-            <div className="p-3 bg-gray-50 rounded-lg">
-              <p className="text-sm text-gray-500">Vouches Received</p>
-              <p className="text-lg font-semibold">{ethosData.stats.vouch.received.count}</p>
+            <div className="p-3 bg-space-700 rounded-lg">
+              <p className="text-sm text-hull-500">Vouches Received</p>
+              <p className="text-lg font-semibold text-hull-100">{ethosData.stats.vouch.received.count}</p>
             </div>
           </div>
         </div>
@@ -152,7 +152,7 @@ export function EthosFields({ ethosData, onRefresh, isRefreshing }: EthosFieldsP
 
 function FieldLabel({ label }: { label: string }) {
   return (
-    <div className="flex items-center gap-1.5 text-sm font-medium text-gray-500">
+    <div className="flex items-center gap-1.5 text-sm font-medium text-hull-500">
       <LockIcon className="w-3 h-3" />
       {label}
     </div>
@@ -163,28 +163,28 @@ function ReadOnlyField({ label, value }: { label: string; value: string | null }
   return (
     <div className="mb-2">
       <FieldLabel label={label} />
-      <p className="text-gray-900 mt-0.5">{value || '-'}</p>
+      <p className="text-hull-100 mt-0.5">{value || '-'}</p>
     </div>
   );
 }
 
 function StatCard({ label, value }: { label: string; value: string }) {
   return (
-    <div className="p-4 bg-gray-50 rounded-lg">
-      <div className="flex items-center gap-1.5 text-sm text-gray-500">
+    <div className="p-4 bg-space-700 rounded-lg">
+      <div className="flex items-center gap-1.5 text-sm text-hull-500">
         <LockIcon className="w-3 h-3" />
         {label}
       </div>
-      <p className="text-xl font-semibold text-gray-900 mt-1">{value}</p>
+      <p className="text-xl font-semibold text-hull-100 mt-1">{value}</p>
     </div>
   );
 }
 
 function ReviewBadge({ type, count }: { type: 'positive' | 'neutral' | 'negative'; count: number }) {
   const colors = {
-    positive: 'bg-green-100 text-green-700',
-    neutral: 'bg-gray-100 text-gray-700',
-    negative: 'bg-red-100 text-red-700',
+    positive: 'bg-green-500/20 text-green-400',
+    neutral: 'bg-hull-500/20 text-hull-400',
+    negative: 'bg-red-500/20 text-red-400',
   };
 
   const labels = {
